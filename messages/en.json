@@ -58,7 +58,9 @@
     "parking": "Parking available",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
-    "closePhotoViewer": "Close photo viewer"
+    "closePhotoViewer": "Close photo viewer",
+    "credits": "credits",
+    "noClassesOnDay": "No classes on this day"
   },
   "reviews": {
     "title": "Reviews",
@@ -105,7 +107,14 @@
     "noPlan": "No active plan",
     "spending": "Credit spending",
     "totalSpent": "Total spent",
-    "noSpending": "No spending yet"
+    "noSpending": "No spending yet",
+    "starter": "Starter",
+    "standard": "Standard",
+    "premium": "Premium",
+    "popular": "POPULAR",
+    "expired": "Expired",
+    "days": "{count}d",
+    "visits": "~{count} visits"
   },
   "profile": {
     "title": "Profile",

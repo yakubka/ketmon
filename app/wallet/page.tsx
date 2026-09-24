@@ -43,14 +43,21 @@ type Messages = {
     spending: string;
     totalSpent: string;
     noSpending: string;
+    starter: string;
+    standard: string;
+    premium: string;
+    popular: string;
+    expired: string;
+    days: string;
+    visits: string;
   };
 };
 
 const PLANS = [
-  { credits: 20, price: 29900, label: "Starter", days: 30, gradient: "from-emerald-400 via-teal-500 to-teal-600" },
-  { credits: 40, price: 49900, label: "Standard", days: 30, popular: true, gradient: "from-fuchsia-500 via-purple-500 to-indigo-600" },
-  { credits: 80, price: 79900, label: "Premium", days: 30, gradient: "from-amber-400 via-orange-500 to-rose-500" },
-];
+  { credits: 20, price: 29900, labelKey: "starter", days: 30, popular: false, gradient: "from-emerald-400 via-teal-500 to-teal-600" },
+  { credits: 40, price: 49900, labelKey: "standard", days: 30, popular: true, gradient: "from-fuchsia-500 via-purple-500 to-indigo-600" },
+  { credits: 80, price: 79900, labelKey: "premium", days: 30, popular: false, gradient: "from-amber-400 via-orange-500 to-rose-500" },
+] as const;
 
 const SPORT_COLORS = [
   "#14b8a6",
@@ -202,7 +209,7 @@ export default function WalletPage() {
                 </p>
               )}
               {planExpiresAt && isExpired && (
-                <p className="text-xs text-red-500">Expired</p>
+                <p className="text-xs text-red-500">{t.wallet.expired}</p>
               )}
             </div>
           </div>
@@ -303,18 +310,18 @@ export default function WalletPage() {
               >
                 {plan.popular && (
                   <span className="absolute right-1.5 top-1.5 z-10 rounded-full bg-white/90 px-1 py-0.5 text-[7px] font-semibold leading-none text-fuchsia-600 shadow-sm backdrop-blur-sm">
-                    POPULAR
+                    {t.wallet.popular}
                   </span>
                 )}
                 <div className={`relative overflow-hidden bg-gradient-to-br ${plan.gradient} px-2.5 pb-2.5 pt-3`}>
                   <div className="pointer-events-none absolute -right-4 -top-6 h-16 w-16 rounded-full bg-white/10" />
-                  <p className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-white/80">{plan.label}</p>
+                  <p className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-white/80">{t.wallet[plan.labelKey]}</p>
                   <p className="mt-1 text-3xl font-black leading-none text-white drop-shadow-sm">{plan.credits}</p>
-                  <p className="mt-1 truncate text-[10px] text-white/80">{t.wallet.credits} · {plan.days}d</p>
+                  <p className="mt-1 truncate text-[10px] text-white/80">{t.wallet.credits} · {t.wallet.days.replace("{count}", String(plan.days))}</p>
                 </div>
                 <div className="bg-white p-2.5">
                   <p className="text-xs font-semibold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
-                  <p className="mt-0.5 truncate text-[10px] text-slate-400">~{visits} visits</p>
+                  <p className="mt-0.5 truncate text-[10px] text-slate-400">{t.wallet.visits.replace("{count}", String(visits))}</p>
                   <Button
                     variant="primary"
                     className="mt-2 w-full !bg-slate-900 px-1 text-[10px] hover:!bg-slate-800"

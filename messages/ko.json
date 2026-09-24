@@ -58,7 +58,9 @@
     "parking": "주차 가능",
     "previousPhoto": "이전 사진",
     "nextPhoto": "다음 사진",
-    "closePhotoViewer": "사진 뷰어 닫기"
+    "closePhotoViewer": "사진 뷰어 닫기",
+    "credits": "크레딧",
+    "noClassesOnDay": "이 날짜에는 클래스가 없습니다"
   },
   "reviews": {
     "title": "후기",
@@ -105,7 +107,14 @@
     "noPlan": "활성 플랜 없음",
     "spending": "크레딧 사용 내역",
     "totalSpent": "총 사용",
-    "noSpending": "사용 내역이 없습니다"
+    "noSpending": "사용 내역이 없습니다",
+    "starter": "스타터",
+    "standard": "스탠다드",
+    "premium": "프리미엄",
+    "popular": "인기",
+    "expired": "만료됨",
+    "days": "{count}일",
+    "visits": "약 {count}회 방문"
   },
   "profile": {
     "title": "프로필",

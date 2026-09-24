@@ -62,6 +62,8 @@ type Messages = {
     dropIn: string;
     pickTime: string;
     classes: string;
+    credits: string;
+    noClassesOnDay: string;
   };
 };
 
@@ -274,7 +276,7 @@ export default function GymDetailPage() {
                         </span>
                       )}
                       <span className="text-xs font-semibold text-brand-700">
-                        {slot.creditCost} credits
+                        {slot.creditCost} {t.detail.credits}
                       </span>
                     </div>
                   </div>
@@ -294,9 +296,7 @@ export default function GymDetailPage() {
       )}
 
       {dropInActivities.length === 0 && classSlots.length === 0 && (
-        <p className="py-10 text-center text-sm text-slate-400">
-          No classes on this day
-        </p>
+        <p className="py-10 text-center text-sm text-slate-400">{t.detail.noClassesOnDay}</p>
       )}
 
       <div className="mt-8">

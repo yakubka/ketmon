@@ -95,7 +95,7 @@ each other's changes:
 
 ## Your tasks (Codex) — do these, in this order
 
-### 1. Wallet plan cards: fix clipping, make all three visible at once
+### [x] 1. Wallet plan cards: fix clipping, make all three visible at once
 File: `app/wallet/page.tsx` only.
 
 Current state: three plan cards (Starter/Standard/Premium) in a horizontal
@@ -111,7 +111,7 @@ labels. Keep the three distinct gradients and the "POPULAR" badge on
 Standard. Keep the `~N visits` estimate line. Test at 375px width (iPhone SE)
 and confirm nothing truncates or wraps awkwardly.
 
-### 2. Bottom nav: compact "dock" style instead of the current full-width bar
+### [x] 2. Bottom nav: compact "dock" style instead of the current full-width bar
 New file: `components/icons/DockNav.tsx` (or similar name) that Claude will
 wire into `components/NavBar.tsx` later — build it as a self-contained,
 exported component so it drops in cleanly. Do not edit `NavBar.tsx` yourself.
@@ -155,7 +155,7 @@ Constraints from the owner's feedback:
 Build and visually test this standalone (e.g., temporarily render it on any
 page) since you can't safely edit `NavBar.tsx` yourself this round.
 
-### 3. Gym detail page: photo carousel, address, amenities info
+### [x] 3. Gym detail page: photo carousel, address, amenities info
 Files: `app/gym/[id]/page.tsx` is off-limits for direct edits (Claude's file
 this round) — instead build these as new standalone components Claude will
 compose in:
@@ -215,7 +215,7 @@ new right-column info block next to the photo carousel (small icon + text
 lines): closing time, trainer available (with fee if any, in credits not
 won), parking.
 
-### 4. Reviews section on gym detail page
+### [x] 4. Reviews section on gym detail page
 New Prisma model (additive):
 
 ```prisma
