@@ -130,10 +130,13 @@ async function main() {
   const gyms = [];
 
   if (osmVenues.length >= 10) {
-    for (const v of osmVenues.slice(0, 30)) {
+    for (let i = 0; i < Math.min(osmVenues.length, 30); i++) {
+      const v = osmVenues[i];
       const pop = Math.floor(Math.random() * 100);
       const tier = pickTier(pop);
       const allowsPeak = tier === VenueTier.NEIGHBORHOOD || pop < 40;
+
+      const area = v.address?.split(" ").find((w) => w.endsWith("동") || w.endsWith("구")) ?? null;
 
       const gym = await prisma.gym.create({
         data: {
@@ -141,6 +144,8 @@ async function main() {
           lat: v.lat,
           lng: v.lng,
           address: v.address ?? null,
+          area,
+          imageUrl: GYM_IMAGES[i % GYM_IMAGES.length],
           tier,
           allowsPeak,
           rating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
