@@ -60,6 +60,8 @@ model Gym {
   lat        Float
   lng        Float
   address    String?
+  area       String?
+  imageUrl   String?
   tier       VenueTier
   allowsPeak Boolean     @default(false)
   rating     Float       @default(4.5)

@@ -33,6 +33,8 @@ type Gym = {
   rating: number;
   popularity: number;
   tier: string;
+  area: string | null;
+  imageUrl: string | null;
   activities: Activity[];
 };
 
@@ -50,6 +52,7 @@ type Messages = {
     toggleMap: string;
     allSports: string;
     allTimes: string;
+    allAreas: string;
     noClasses: string;
   };
   timeBand: Record<string, string>;
@@ -60,6 +63,7 @@ export default function HomePage() {
   const [userPos, setUserPos] = useState(GANGNAM);
   const [sportFilter, setSportFilter] = useState("");
   const [bandFilter, setBandFilter] = useState("");
+  const [areaFilter, setAreaFilter] = useState("");
   const [loading, setLoading] = useState(true);
   const t = useMessages<Messages>();
 
@@ -98,6 +102,12 @@ export default function HomePage() {
     return Array.from(set).sort();
   }, [gyms]);
 
+  const areas = useMemo(() => {
+    const set = new Set<string>();
+    for (const g of gyms) if (g.area) set.add(g.area);
+    return Array.from(set).sort();
+  }, [gyms]);
+
   const MAX_DISTANCE_KM = 10;
 
   const filtered = useMemo(() => {
@@ -105,9 +115,10 @@ export default function HomePage() {
       if (item.distance > MAX_DISTANCE_KM) return false;
       if (sportFilter && item.activity.sport !== sportFilter) return false;
       if (bandFilter && item.slot.timeBand !== bandFilter) return false;
+      if (areaFilter && item.gym.area !== areaFilter) return false;
       return true;
     });
-  }, [items, sportFilter, bandFilter]);
+  }, [items, sportFilter, bandFilter, areaFilter]);
 
   if (!t) return null;
 
@@ -125,7 +136,7 @@ export default function HomePage() {
         </Link>
       </div>
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-wrap gap-2">
         <select
           value={sportFilter}
           onChange={(e) => setSportFilter(e.target.value)}
@@ -134,6 +145,17 @@ export default function HomePage() {
           <option value="">{t.home.allSports}</option>
           {sports.map((s) => (
             <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+
+        <select
+          value={areaFilter}
+          onChange={(e) => setAreaFilter(e.target.value)}
+          className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700"
+        >
+          <option value="">{t.home.allAreas}</option>
+          {areas.map((a) => (
+            <option key={a} value={a}>{a}</option>
           ))}
         </select>
 
@@ -176,6 +198,7 @@ export default function HomePage() {
             creditCost={item.slot.creditCost}
             startTime={item.slot.startTime}
             timeBandLabel={t.timeBand[item.slot.timeBand] ?? item.slot.timeBand}
+            imageUrl={item.gym.imageUrl}
           />
         ))}
       </div>

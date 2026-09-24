@@ -32,6 +32,7 @@ type Gym = {
   name: string;
   rating: number;
   address: string | null;
+  imageUrl: string | null;
   tier: string;
   activities: Activity[];
 };
@@ -121,6 +122,15 @@ export default function GymDetailPage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
+      {gym.imageUrl && (
+        <div className="mb-4 overflow-hidden rounded-xl">
+          <img
+            src={gym.imageUrl}
+            alt={gym.name}
+            className="h-48 w-full object-cover"
+          />
+        </div>
+      )}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-slate-900">{gym.name}</h1>
         <p className="mt-1 text-sm text-slate-500">

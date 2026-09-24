@@ -16,31 +16,42 @@ const SPORTS = [
   { sport: "martial_arts", name: "무술 (Martial Arts)" },
 ];
 
+const GYM_IMAGES = [
+  "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1593079831268-3381b0db4a77?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop",
+];
+
 const FALLBACK_GYMS = [
-  { name: "강남 피트니스", lat: 37.4979, lng: 127.0276, pop: 85 },
-  { name: "역삼 요가룸", lat: 37.5007, lng: 127.0365, pop: 72 },
-  { name: "선릉 복싱짐", lat: 37.5045, lng: 127.0490, pop: 65 },
-  { name: "삼성 필라테스", lat: 37.5088, lng: 127.0630, pop: 78 },
-  { name: "논현 크로스핏", lat: 37.5100, lng: 127.0250, pop: 42 },
-  { name: "청담 스튜디오", lat: 37.5200, lng: 127.0470, pop: 90 },
-  { name: "신논현 헬스클럽", lat: 37.5040, lng: 127.0240, pop: 55 },
-  { name: "대치 짐", lat: 37.4940, lng: 127.0580, pop: 30 },
-  { name: "도곡 요가", lat: 37.4880, lng: 127.0440, pop: 25 },
-  { name: "압구정 필라테스", lat: 37.5250, lng: 127.0280, pop: 88 },
-  { name: "학동 복싱", lat: 37.5140, lng: 127.0310, pop: 35 },
-  { name: "양재 헬스", lat: 37.4840, lng: 127.0350, pop: 48 },
-  { name: "개포 크로스핏", lat: 37.4790, lng: 127.0480, pop: 20 },
-  { name: "일원 스튜디오", lat: 37.4830, lng: 127.0820, pop: 28 },
-  { name: "수서 짐", lat: 37.4870, lng: 127.1000, pop: 22 },
-  { name: "잠실 필라테스", lat: 37.5130, lng: 127.1000, pop: 75 },
-  { name: "선정릉 요가", lat: 37.5100, lng: 127.0430, pop: 60 },
-  { name: "강남역 헬스", lat: 37.4970, lng: 127.0280, pop: 92 },
-  { name: "교대 복싱짐", lat: 37.4930, lng: 127.0140, pop: 50 },
-  { name: "매봉 크로스핏", lat: 37.4870, lng: 127.0330, pop: 18 },
-  { name: "한티 스튜디오", lat: 37.5010, lng: 127.0530, pop: 32 },
-  { name: "뱅뱅 피트니스", lat: 37.5020, lng: 127.0260, pop: 70 },
-  { name: "도산 요가룸", lat: 37.5220, lng: 127.0380, pop: 82 },
-  { name: "세곡 헬스장", lat: 37.4700, lng: 127.0600, pop: 15 },
+  { name: "강남 피트니스", lat: 37.4979, lng: 127.0276, pop: 85, area: "강남" },
+  { name: "역삼 요가룸", lat: 37.5007, lng: 127.0365, pop: 72, area: "역삼" },
+  { name: "선릉 복싱짐", lat: 37.5045, lng: 127.0490, pop: 65, area: "선릉" },
+  { name: "삼성 필라테스", lat: 37.5088, lng: 127.0630, pop: 78, area: "삼성" },
+  { name: "논현 크로스핏", lat: 37.5100, lng: 127.0250, pop: 42, area: "논현" },
+  { name: "청담 스튜디오", lat: 37.5200, lng: 127.0470, pop: 90, area: "청담" },
+  { name: "신논현 헬스클럽", lat: 37.5040, lng: 127.0240, pop: 55, area: "신논현" },
+  { name: "대치 짐", lat: 37.4940, lng: 127.0580, pop: 30, area: "대치" },
+  { name: "도곡 요가", lat: 37.4880, lng: 127.0440, pop: 25, area: "도곡" },
+  { name: "압구정 필라테스", lat: 37.5250, lng: 127.0280, pop: 88, area: "압구정" },
+  { name: "학동 복싱", lat: 37.5140, lng: 127.0310, pop: 35, area: "학동" },
+  { name: "양재 헬스", lat: 37.4840, lng: 127.0350, pop: 48, area: "양재" },
+  { name: "개포 크로스핏", lat: 37.4790, lng: 127.0480, pop: 20, area: "개포" },
+  { name: "일원 스튜디오", lat: 37.4830, lng: 127.0820, pop: 28, area: "일원" },
+  { name: "수서 짐", lat: 37.4870, lng: 127.1000, pop: 22, area: "수서" },
+  { name: "잠실 필라테스", lat: 37.5130, lng: 127.1000, pop: 75, area: "잠실" },
+  { name: "선정릉 요가", lat: 37.5100, lng: 127.0430, pop: 60, area: "선정릉" },
+  { name: "강남역 헬스", lat: 37.4970, lng: 127.0280, pop: 92, area: "강남" },
+  { name: "교대 복싱짐", lat: 37.4930, lng: 127.0140, pop: 50, area: "교대" },
+  { name: "매봉 크로스핏", lat: 37.4870, lng: 127.0330, pop: 18, area: "매봉" },
+  { name: "한티 스튜디오", lat: 37.5010, lng: 127.0530, pop: 32, area: "한티" },
+  { name: "뱅뱅 피트니스", lat: 37.5020, lng: 127.0260, pop: 70, area: "강남" },
+  { name: "도산 요가룸", lat: 37.5220, lng: 127.0380, pop: 82, area: "압구정" },
+  { name: "세곡 헬스장", lat: 37.4700, lng: 127.0600, pop: 15, area: "세곡" },
 ];
 
 async function fetchOverpass(): Promise<Array<{ name: string; lat: number; lng: number; address?: string; sport?: string }>> {
@@ -174,7 +185,8 @@ async function main() {
       }
     }
   } else {
-    for (const g of FALLBACK_GYMS) {
+    for (let i = 0; i < FALLBACK_GYMS.length; i++) {
+      const g = FALLBACK_GYMS[i];
       const tier = pickTier(g.pop);
       const allowsPeak = tier === VenueTier.NEIGHBORHOOD || g.pop < 40;
 
@@ -183,6 +195,8 @@ async function main() {
           name: g.name,
           lat: g.lat,
           lng: g.lng,
+          area: g.area,
+          imageUrl: GYM_IMAGES[i % GYM_IMAGES.length],
           tier,
           allowsPeak,
           rating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
