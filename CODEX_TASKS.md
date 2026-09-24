@@ -254,9 +254,163 @@ Add i18n keys to both `messages/en.json` and `messages/ko.json` under a new
 `reviews` section (`title`, `noReviews`) — keep both files in sync, this is
 a hard rule above.
 
+## Round 2 tasks — added after an audit found gaps in round 1
+
+The owner asked for a full audit of the session against what actually shipped.
+These are the gaps that land in your lane (don't overlap Claude's files below).
+Do these after finishing your round 1 list above, same coordination rules apply.
+
+### 5. Verify/fix: wallet plan cards still clipped
+This was task 1 in round 1. Status is unknown — the owner posted a screenshot
+*after* a fix was supposedly shipped showing the third (amber) plan card still
+cut off at the edge, not the full "see all three at once, no scroll" outcome
+that was asked for. Before doing anything else: check the actual current state
+of `app/wallet/page.tsx` in this checkout (someone may have already fixed it -
+check `git log -p -- app/wallet/page.tsx` for recent commits first). If it's
+still a horizontal scroll row instead of a non-scrolling `grid-cols-3`, fix it
+for real this time and confirm visually (or via computed styles) that all
+three cards render with no overflow at a 375px viewport width before calling
+it done.
+
+### 6. Weekly calendar grid for booking (columns per day)
+File: still don't edit `app/gym/[id]/page.tsx` directly — build
+`components/WeeklyBookingGrid.tsx` standalone, Claude composes it in.
+
+The owner asked for this repeatedly and it never landed: a real week-view
+grid (columns = the next 7 days, like a calendar app week view) for browsing
+scheduled-class slots, not the current day-strip-plus-list pattern. Keep it
+information-light per the owner's own correction ("много инфы это мусор
+буквально, просто на неделю показать, более грамотно по колонкам") - this is
+NOT meant to show every slot with full detail, it's a compact overview: one
+column per day, each cell showing just a time (or a couple of times) that
+falls within the member's `preferredTimeBand` window, tappable to jump into
+booking that slot. Pull `preferredTimeBand` from the `User` record the same
+way `app/gym/[id]/page.tsx` already does (see its `preferredTimeBand` state -
+read that file to see the fetch pattern, just don't edit it). Component props:
+`activities` (from the gym's class activities + their slots for the next 7
+days) and `onSelectSlot(slotId)`.
+
+### 7. Slot crowd-level hint
+Small addition to whatever slot-rendering component you're already touching
+(the new weekly grid, and/or `GymReviews`/detail info block from round 1):
+show a rough "busy" / "quiet" signal per time slot so a lazy user can avoid
+peak crowds. `ClassSlot` already has `capacity` and `booked` - derive it
+client-side, no schema change needed: `booked/capacity < 0.4` → quiet,
+`> 0.75` → busy, otherwise don't show anything (don't clutter every slot with
+a label, only flag the two extremes). Use short, plain language, no emojis,
+through the i18n files as usual.
+
+### 8. "You may also like" — adjacent-sport suggestions
+New standalone component `components/YouMayAlsoLike.tsx` + a small helper
+`lib/sport-similarity.ts` exporting a static adjacency map, e.g.:
+
+```ts
+export const SPORT_ADJACENCY: Record<string, string[]> = {
+  pilates: ["yoga", "dance"],
+  swimming: ["yoga", "crossfit"],
+  yoga: ["pilates", "dance"],
+  boxing: ["martial_arts", "crossfit"],
+  martial_arts: ["boxing", "crossfit"],
+  crossfit: ["gym", "boxing"],
+  gym: ["crossfit", "martial_arts"],
+  dance: ["pilates", "yoga"],
+  tennis: ["gym", "crossfit"],
+};
+```
+
+Component takes `favoriteSports: string[]` and `allGyms` (whatever shape the
+`/api/gyms` response already has - read `app/home/page.tsx`'s `GymSummary`
+type for the shape, don't edit the file) and renders a horizontal row of gym
+cards whose sports overlap the adjacency suggestions but NOT the user's actual
+favorites (the point is showing something *new*, not restating their
+interests). Claude will place this on the home page below the main grid -
+build and export it so it just needs an import and a props hookup.
+
+### 9. Landing page copy pass
+File: `app/page.tsx` is fine for you to edit directly - nobody else is
+touching it this round.
+
+Only the sport icons on the landing page got fixed this session; the actual
+copy was never touched despite being asked for explicitly early on
+("максимально привлечь пользователя лендосом", i.e. make the landing page
+actually sell the product hard when someone finds it searching "switchfits").
+Go through `messages/en.json` and `messages/ko.json`'s `landing` section and
+rewrite for a stronger hook - lead with the no-contract/credits angle instead
+of a flat feature list, sharpen the hero subtitle, make the three feature
+blurbs concrete instead of generic ("Variety" / "Credits" / "Convenience" read
+like placeholder headers). Keep the existing key names so `app/page.tsx`
+doesn't need code changes, just better copy in both locale files.
+
+### 10. Map page: marker photos, default center
+Files: `components/MapContent.tsx`, `app/map/page.tsx` - fully yours now,
+Claude was going to do this but the owner reassigned it to you.
+
+Two concrete bugs, both untouched all session:
+- `MapContent.tsx`'s `MapContainer` has `center={[37.4979, 127.0276]}` -
+  that's Seoul (roughly Gangnam), not Incheon. Change it to Incheon Yeonsu
+  (`[37.4106, 126.6784]`), matching `INCHEON_YEONSU` already used in
+  `app/home/page.tsx` (read for reference, don't edit it). This only matters
+  when geolocation fails/is denied - `UserLocationMarker` re-centers on the
+  real user position when it succeeds, but Seoul is a bad fallback.
+- Marker popups show only name + rating + a "Details" link - no photo. The
+  `Gym` type in `MapContent.tsx` and the fetch in `app/map/page.tsx` don't
+  even select `imageUrl` from `/api/gyms`. Add it to both, and render a small
+  thumbnail (use the existing `GymImage` component at
+  `components/GymImage.tsx` - it already handles broken-image fallback via
+  the sport icon, reuse it rather than a bare `<img>`) in the Leaflet popup
+  above the name/rating line.
+
+Note: gym coordinates that were landing inside real parks/water have already
+been fixed (commit `479eeb8`, checked against real OSM polygons, not just a
+screenshot) - don't re-touch `scripts/seed.ts` coordinates for this task,
+that part is done.
+
+### 11. Progress-indicator stepper for onboarding
+File: `app/onboarding/page.tsx` - fully yours now.
+
+The owner pasted a full shadcn-style `progress-indicator.tsx` component early
+in the session (framer-motion, animated dot progress bar that expands per
+step, a Back button that slides in after step 1, Continue/Finish morphing
+button) and it was never integrated - onboarding still uses four static
+`bg-teal-500`/`bg-slate-200` dots with no animation and no back-navigation.
+Install `framer-motion` if not already present (check `package.json` first -
+it may already be there from the dock nav work). Adapt the component's visual
+language (animated progress fill, Back/Continue buttons) to drive the
+existing 4-step onboarding state (`step`, `setStep` in
+`app/onboarding/page.tsx`) instead of its own internal `useState` - the
+existing step content (name/sports/time/plan panels) and their validation
+guards (e.g. can't leave the name step without `userId` and a non-empty name)
+must keep working exactly as they do now. Don't change the save logic
+(`saveName`, `saveProfileAndAdvance`, `handlePlan`), only the step-indicator
+chrome and add a working Back button (currently there's no way to go back a
+step at all).
+
+### 12. Hover effect on home page gym cards
+File: `app/home/page.tsx` - narrow, surgical exception. Do not touch anything
+else in this file, and do not restructure it - this is a one-line class
+change, in and out.
+
+Find this in the card's image wrapper:
+```
+className="h-full w-full object-cover transition-transform group-hover:scale-105"
+```
+on the `GymImage` inside the gym card `.map()` in the grid render (search for
+`aspect-[4/3]` to locate it fast). The owner asked for hover to cycle through
+photos instead of zooming in. Currently there's only one photo per gym
+(`imageUrl`), so a literal cycle isn't possible without also doing task 3a
+from round 1 (the `images: String[]` field) - if you've already done that
+task, wire real cycling here (swap the displayed image on a `setInterval`
+while `:hover`, or a CSS-only multi-background crossfade). If you haven't
+gotten to task 3a yet, do that first, then come back to this - don't ship a
+fake "cycle" over a single repeated image. At minimum, drop the zoom
+(`group-hover:scale-105`) even if you can't do real cycling yet, since the
+owner was explicit that zoom is the wrong effect.
+
 ## NOT your tasks (Claude's lane this round — do not touch these files)
 
-- `app/home/page.tsx`
+Nothing left in this lane as of this update - the owner moved every
+remaining round-1 item to you (tasks 10-12 above). Claude is stepping back to
+avoid duplicate work. If that changes, this section will say so.
 - `components/icons/SportIcons.tsx` (mid-fix: crossfit and tennis icons)
 - `components/WheelPicker.tsx`
 - `scripts/seed.ts` **structure/generation logic** — you MAY append to it per
