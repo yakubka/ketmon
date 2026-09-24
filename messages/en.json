@@ -93,6 +93,65 @@
     "slots": "Slots",
     "revenue": "Revenue"
   },
+  "landing": {
+    "hero": {
+      "title": "One subscription for all sports",
+      "subtitle": "Yoga, swimming, fitness, tennis and dozens more activities in one app. Pay per visit with credits, no contracts.",
+      "cta": "Get started free",
+      "login": "Log in"
+    },
+    "features": {
+      "variety": { "title": "Variety", "desc": "Find any sport, from yoga to boxing. New venues added every month." },
+      "credits": { "title": "Credits", "desc": "Pay per visit, not monthly. Buy credits and use them at any venue." },
+      "convenience": { "title": "Convenience", "desc": "Venues all across Korea. Find one near home or work." }
+    },
+    "sports": { "title": "All sports in one place", "subtitle": "And we add new ones every month" },
+    "howItWorks": {
+      "title": "How to get started",
+      "step1": { "title": "Sign up", "desc": "Create an account with Google in seconds" },
+      "step2": { "title": "Choose a venue", "desc": "Find a gym, court, or studio near you" },
+      "step3": { "title": "Book and go", "desc": "Pick a time slot, pay with credits, show up" }
+    },
+    "plans": {
+      "title": "Choose your plan",
+      "starter": "Starter",
+      "standard": "Standard",
+      "premium": "Premium",
+      "popular": "POPULAR",
+      "perCredit": "credit",
+      "getStarted": "Get started",
+      "credits": "credits"
+    },
+    "cities": { "title": "Available in" },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "contact": "Contact",
+      "copyright": "2026 Switch. All rights reserved."
+    }
+  },
+  "onboarding": {
+    "nameStep": {
+      "title": "What should we call you?",
+      "subtitle": "This is how you'll appear in bookings",
+      "placeholder": "Your name",
+      "next": "Continue"
+    },
+    "sportsStep": {
+      "title": "What do you enjoy?",
+      "subtitle": "Pick your favorite sports so we can recommend venues",
+      "next": "Continue",
+      "skip": "Skip for now"
+    },
+    "planStep": {
+      "title": "Choose a plan",
+      "subtitle": "Start with credits to book your first class",
+      "start": "Get started",
+      "credits": "credits",
+      "perCredit": "credit",
+      "popular": "POPULAR"
+    }
+  },
   "owner": {
     "dashboard": "Owner Dashboard",
     "offPeakFill": "Off-peak fill",

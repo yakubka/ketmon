@@ -1,7 +1,7 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
-const PROTECTED_MEMBER = ["/home", "/wallet", "/bookings", "/map", "/gym", "/profile"];
+const PROTECTED_MEMBER = ["/home", "/wallet", "/bookings", "/map", "/gym", "/profile", "/onboarding"];
 const PROTECTED_OWNER = ["/owner"];
 
 export async function middleware(req: NextRequest) {
@@ -46,5 +46,6 @@ export const config = {
     "/gym/:path*",
     "/profile/:path*",
     "/owner/:path*",
+    "/onboarding/:path*",
   ],
 };

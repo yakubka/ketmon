@@ -30,11 +30,12 @@ export async function GET(req: NextRequest) {
           email,
           name: data.session.user.user_metadata?.full_name ?? null,
           role: "MEMBER",
-          creditBalance: 30,
+          creditBalance: 0,
           googleAccessToken: providerToken,
           googleRefreshToken: providerRefreshToken,
         },
       });
+      return NextResponse.redirect(new URL("/onboarding", req.url));
     } else {
       await prisma.user.update({
         where: { email },

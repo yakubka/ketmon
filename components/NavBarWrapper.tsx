@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { NavBar } from "./NavBar";
 
-const PUBLIC_PATHS = ["/", "/auth", "/privacy", "/terms"];
+const PUBLIC_PATHS = ["/", "/auth", "/privacy", "/terms", "/onboarding"];
 
 export function NavBarWrapper() {
   const pathname = usePathname();
