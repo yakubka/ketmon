@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { clsx } from "clsx";
 import { useMessages } from "@/lib/useMessages";
+import { DockNav } from "@/components/DockNav";
 import {
   HomeIcon,
   CalendarIcon,
@@ -53,48 +52,22 @@ export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
 
   const links = isOwnerSection ? ownerLinks : memberLinks;
 
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-lg items-center justify-around px-2 py-2">
-        {links.map((link) => {
-          const active =
-            pathname === link.href ||
-            (link.href !== "/home" &&
-              link.href !== "/owner" &&
-              pathname.startsWith(link.href));
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={clsx(
-                "flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium transition-colors",
-                active ? "text-brand-600" : "text-slate-400 hover:text-slate-600",
-              )}
-            >
-              {link.icon}
-              {link.label}
-            </Link>
-          );
-        })}
-        {!isOwnerSection && role === "OWNER" && (
-          <Link
-            href="/owner"
-            className="flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
-          >
-            <SwitchIcon />
-            {t.nav.owner}
-          </Link>
-        )}
-        {isOwnerSection && (
-          <Link
-            href="/home"
-            className="flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
-          >
-            <SwitchIcon />
-            {t.nav.member}
-          </Link>
-        )}
-      </div>
-    </nav>
-  );
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/home" && href !== "/owner" && pathname.startsWith(href));
+
+  const items = links.map((link) => ({
+    href: link.href,
+    label: link.label,
+    icon: link.icon,
+    active: isActive(link.href),
+  }));
+
+  if (!isOwnerSection && role === "OWNER") {
+    items.push({ href: "/owner", label: t.nav.owner, icon: <SwitchIcon />, active: false });
+  }
+  if (isOwnerSection) {
+    items.push({ href: "/home", label: t.nav.member, icon: <SwitchIcon />, active: false });
+  }
+
+  return <DockNav items={items} />;
 }
