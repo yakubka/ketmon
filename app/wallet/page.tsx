@@ -10,8 +10,27 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { SportIcon } from "@/components/icons/SportIcons";
 import { createClient } from "@/lib/supabase/client";
 import { useMessages } from "@/lib/useMessages";
+
+const SPORT_LABELS: Record<string, { en: string; ko: string }> = {
+  gym: { en: "Gym", ko: "헬스" },
+  yoga: { en: "Yoga", ko: "요가" },
+  pilates: { en: "Pilates", ko: "필라테스" },
+  boxing: { en: "Boxing", ko: "복싱" },
+  swimming: { en: "Swimming", ko: "수영" },
+  dance: { en: "Dance", ko: "댄스" },
+  crossfit: { en: "CrossFit", ko: "크로스핏" },
+  martial_arts: { en: "Martial Arts", ko: "무술" },
+  tennis: { en: "Tennis", ko: "테니스" },
+};
+
+function formatSport(sport: string, locale: string): string {
+  const entry = SPORT_LABELS[sport];
+  if (entry) return locale === "ko" ? entry.ko : entry.en;
+  return sport.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 type Transaction = {
   id: string;
@@ -80,6 +99,7 @@ export default function WalletPage() {
   const [loading, setLoading] = useState(true);
   const [topUpLoading, setTopUpLoading] = useState<number | null>(null);
   const t = useMessages<Messages>();
+  const locale = typeof window !== "undefined" ? localStorage.getItem("ketmon-locale") || "ko" : "ko";
 
   useEffect(() => {
     const supabase = createClient();
@@ -239,6 +259,25 @@ export default function WalletPage() {
                   strokeWidth={40}
                   startAngle={90}
                   endAngle={-270}
+                  labelLine={false}
+                  label={({ cx, cy, midAngle = 0, innerRadius = 0, outerRadius = 0, percent = 0 }) => {
+                    if (percent < 0.06) return null;
+                    const RADIAN = Math.PI / 180;
+                    const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
+                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        className="fill-white text-[10px] font-semibold"
+                      >
+                        {Math.round(percent * 100)}%
+                      </text>
+                    );
+                  }}
                 >
                   <Label
                     content={({ viewBox }) => {
@@ -275,18 +314,24 @@ export default function WalletPage() {
             <div className="mt-4 flex flex-col gap-2.5">
               {spending.map((item, i) => {
                 const pct = totalSpent > 0 ? Math.round((item.credits / totalSpent) * 100) : 0;
+                const color = SPORT_COLORS[i % SPORT_COLORS.length];
                 return (
                   <div key={item.sport} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div
-                        className="h-3 w-1 rounded-full"
-                        style={{ backgroundColor: SPORT_COLORS[i % SPORT_COLORS.length] }}
-                      />
-                      <span className="text-sm text-slate-600">{item.sport}</span>
+                        className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full"
+                        style={{ backgroundColor: `${color}22` }}
+                      >
+                        <SportIcon sport={item.sport} className="h-3.5 w-3.5" />
+                      </div>
+                      <span className="text-sm text-slate-600">{formatSport(item.sport, locale)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-slate-900">{item.credits}</span>
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+                      <span
+                        className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                        style={{ backgroundColor: `${color}22`, color }}
+                      >
                         {pct}%
                       </span>
                     </div>
