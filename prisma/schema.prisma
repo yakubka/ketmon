@@ -46,6 +46,8 @@ model User {
   locale              String   @default("ko")
   role                Role     @default(MEMBER)
   creditBalance       Int      @default(30)
+  planName            String?
+  planExpiresAt       DateTime?
   googleAccessToken   String?
   googleRefreshToken  String?
   gyms                Gym[]

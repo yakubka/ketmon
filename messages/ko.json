@@ -71,7 +71,14 @@
     "noTransactions": "거래 내역이 없습니다",
     "topUp": "충전",
     "bookingTxn": "예약",
-    "refund": "환불"
+    "refund": "환불",
+    "subscription": "구독",
+    "activePlan": "플랜",
+    "expiresOn": "유효 기간",
+    "noPlan": "활성 플랜 없음",
+    "spending": "크레딧 사용 내역",
+    "totalSpent": "총 사용",
+    "noSpending": "사용 내역이 없습니다"
   },
   "profile": {
     "title": "프로필",

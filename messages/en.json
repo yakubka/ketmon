@@ -71,7 +71,14 @@
     "noTransactions": "No transactions yet",
     "topUp": "Top-up",
     "bookingTxn": "Booking",
-    "refund": "Refund"
+    "refund": "Refund",
+    "subscription": "Subscription",
+    "activePlan": "Plan",
+    "expiresOn": "Active until",
+    "noPlan": "No active plan",
+    "spending": "Credit spending",
+    "totalSpent": "Total spent",
+    "noSpending": "No spending yet"
   },
   "profile": {
     "title": "Profile",
