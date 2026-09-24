@@ -3,25 +3,44 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
+import { useMessages } from "@/lib/useMessages";
 
-const MEMBER_LINKS = [
-  { href: "/home", label: "Home" },
-  { href: "/bookings", label: "Bookings" },
-  { href: "/wallet", label: "Wallet" },
-  { href: "/profile", label: "Profile" },
-];
-
-const OWNER_LINKS = [
-  { href: "/owner", label: "Dashboard" },
-  { href: "/owner/slots", label: "Slots" },
-  { href: "/owner/bookings", label: "Bookings" },
-  { href: "/owner/revenue", label: "Revenue" },
-];
+type Messages = {
+  nav: {
+    home: string;
+    bookings: string;
+    wallet: string;
+    profile: string;
+    owner: string;
+    member: string;
+    dashboard: string;
+    slots: string;
+    revenue: string;
+  };
+};
 
 export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
   const pathname = usePathname();
   const isOwnerSection = pathname.startsWith("/owner");
-  const links = isOwnerSection ? OWNER_LINKS : MEMBER_LINKS;
+  const t = useMessages<Messages>();
+
+  if (!t) return null;
+
+  const memberLinks = [
+    { href: "/home", label: t.nav.home },
+    { href: "/bookings", label: t.nav.bookings },
+    { href: "/wallet", label: t.nav.wallet },
+    { href: "/profile", label: t.nav.profile },
+  ];
+
+  const ownerLinks = [
+    { href: "/owner", label: t.nav.dashboard },
+    { href: "/owner/slots", label: t.nav.slots },
+    { href: "/owner/bookings", label: t.nav.bookings },
+    { href: "/owner/revenue", label: t.nav.revenue },
+  ];
+
+  const links = isOwnerSection ? ownerLinks : memberLinks;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/90 backdrop-blur-sm">
@@ -50,7 +69,7 @@ export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
             href="/owner"
             className="flex flex-col items-center px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
           >
-            Owner
+            {t.nav.owner}
           </Link>
         )}
         {isOwnerSection && (
@@ -58,7 +77,7 @@ export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
             href="/home"
             className="flex flex-col items-center px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
           >
-            Member
+            {t.nav.member}
           </Link>
         )}
       </div>

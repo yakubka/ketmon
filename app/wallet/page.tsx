@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import { useMessages } from "@/lib/useMessages";
 
 type Transaction = {
   id: string;
@@ -12,13 +13,21 @@ type Transaction = {
   createdAt: string;
 };
 
-const PACKS = [10, 30, 50];
-
-const TYPE_LABELS: Record<string, string> = {
-  PURCHASE: "Top-up",
-  SPEND: "Booking",
-  REFUND: "Refund",
+type Messages = {
+  wallet: {
+    title: string;
+    balance: string;
+    credits: string;
+    buyCredits: string;
+    history: string;
+    noTransactions: string;
+    topUp: string;
+    bookingTxn: string;
+    refund: string;
+  };
 };
+
+const PACKS = [10, 30, 50];
 
 export default function WalletPage() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -26,6 +35,7 @@ export default function WalletPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [topUpLoading, setTopUpLoading] = useState<number | null>(null);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     const supabase = createClient();
@@ -63,7 +73,7 @@ export default function WalletPage() {
     setTopUpLoading(null);
   }
 
-  if (loading) {
+  if (loading || !t) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10">
         <div className="h-32 animate-pulse rounded-xl bg-slate-100" />
@@ -71,18 +81,24 @@ export default function WalletPage() {
     );
   }
 
+  const TYPE_LABELS: Record<string, string> = {
+    PURCHASE: t.wallet.topUp,
+    SPEND: t.wallet.bookingTxn,
+    REFUND: t.wallet.refund,
+  };
+
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      <h1 className="text-lg font-bold text-slate-900">Wallet</h1>
+      <h1 className="text-lg font-bold text-slate-900">{t.wallet.title}</h1>
 
       <Card className="mt-4 p-6 text-center">
-        <p className="text-sm text-slate-500">Balance</p>
+        <p className="text-sm text-slate-500">{t.wallet.balance}</p>
         <p className="mt-1 text-3xl font-bold text-slate-900">{balance}</p>
-        <p className="text-xs text-slate-400">credits</p>
+        <p className="text-xs text-slate-400">{t.wallet.credits}</p>
       </Card>
 
       <section className="mt-6">
-        <h2 className="text-sm font-semibold text-slate-500">Buy credits</h2>
+        <h2 className="text-sm font-semibold text-slate-500">{t.wallet.buyCredits}</h2>
         <div className="mt-3 flex gap-3">
           {PACKS.map((amount) => (
             <Button
@@ -99,9 +115,9 @@ export default function WalletPage() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-sm font-semibold text-slate-500">History</h2>
+        <h2 className="text-sm font-semibold text-slate-500">{t.wallet.history}</h2>
         {transactions.length === 0 && (
-          <p className="mt-2 text-sm text-slate-400">No transactions yet</p>
+          <p className="mt-2 text-sm text-slate-400">{t.wallet.noTransactions}</p>
         )}
         <div className="mt-3 space-y-1">
           {transactions.map((txn) => (

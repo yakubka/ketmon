@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import { useMessages } from "@/lib/useMessages";
 
 type Booking = {
   id: string;
@@ -12,6 +13,13 @@ type Booking = {
     activity: { name: string };
     gym: { name: string };
     startTime: string;
+  };
+};
+
+type Messages = {
+  owner: {
+    incomingBookings: string;
+    noBookings: string;
   };
 };
 
@@ -26,6 +34,7 @@ const STATUS_STYLES: Record<string, string> = {
 export default function OwnerBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     const supabase = createClient();
@@ -43,7 +52,7 @@ export default function OwnerBookingsPage() {
     });
   }, []);
 
-  if (loading) {
+  if (loading || !t) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10">
         {[1, 2, 3].map((i) => (
@@ -55,10 +64,10 @@ export default function OwnerBookingsPage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      <h1 className="text-lg font-bold text-slate-900">Incoming Bookings</h1>
+      <h1 className="text-lg font-bold text-slate-900">{t.owner.incomingBookings}</h1>
 
       {bookings.length === 0 && (
-        <p className="mt-4 text-sm text-slate-400">No bookings yet</p>
+        <p className="mt-4 text-sm text-slate-400">{t.owner.noBookings}</p>
       )}
 
       <div className="mt-4 space-y-3">

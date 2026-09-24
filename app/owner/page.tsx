@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import { useMessages } from "@/lib/useMessages";
 import Link from "next/link";
 
 type GymSummary = {
@@ -15,9 +16,25 @@ type GymSummary = {
   revenueToDate: number;
 };
 
+type Messages = {
+  owner: {
+    dashboard: string;
+    offPeakFill: string;
+    upcoming: string;
+    revenue: string;
+    slots: string;
+  };
+  nav: {
+    bookings: string;
+    revenue: string;
+    slots: string;
+  };
+};
+
 export default function OwnerHomePage() {
   const [gyms, setGyms] = useState<GymSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     const supabase = createClient();
@@ -35,7 +52,7 @@ export default function OwnerHomePage() {
     });
   }, []);
 
-  if (loading) {
+  if (loading || !t) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10">
         {[1, 2].map((i) => (
@@ -47,12 +64,12 @@ export default function OwnerHomePage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      <h1 className="text-lg font-bold text-slate-900">Owner Dashboard</h1>
+      <h1 className="text-lg font-bold text-slate-900">{t.owner.dashboard}</h1>
 
       <nav className="mt-4 flex gap-2 text-xs">
-        <Link href="/owner/slots" className="rounded-lg bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200">Slots</Link>
-        <Link href="/owner/bookings" className="rounded-lg bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200">Bookings</Link>
-        <Link href="/owner/revenue" className="rounded-lg bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200">Revenue</Link>
+        <Link href="/owner/slots" className="rounded-lg bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200">{t.owner.slots}</Link>
+        <Link href="/owner/bookings" className="rounded-lg bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200">{t.nav.bookings}</Link>
+        <Link href="/owner/revenue" className="rounded-lg bg-slate-100 px-3 py-1.5 text-slate-700 hover:bg-slate-200">{t.nav.revenue}</Link>
       </nav>
 
       <div className="mt-6 space-y-4">
@@ -64,15 +81,15 @@ export default function OwnerHomePage() {
             <div className="mt-4 grid grid-cols-3 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold text-brand-600">{gym.offPeakFillPct}%</p>
-                <p className="text-[10px] text-slate-400">Off-peak fill</p>
+                <p className="text-[10px] text-slate-400">{t.owner.offPeakFill}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-slate-900">{gym.upcomingCount}</p>
-                <p className="text-[10px] text-slate-400">Upcoming</p>
+                <p className="text-[10px] text-slate-400">{t.owner.upcoming}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-slate-900">{gym.revenueToDate}</p>
-                <p className="text-[10px] text-slate-400">Revenue (cr)</p>
+                <p className="text-[10px] text-slate-400">{t.owner.revenue} (cr)</p>
               </div>
             </div>
           </Card>

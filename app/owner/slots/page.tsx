@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge, type TimeBandVariant } from "@/components/ui/Badge";
 import { createClient } from "@/lib/supabase/client";
+import { useMessages } from "@/lib/useMessages";
 
 type Slot = {
   id: string;
@@ -21,16 +22,22 @@ type GymData = {
   slots: Slot[];
 };
 
-const BAND_ORDER: TimeBandVariant[] = ["OFF_PEAK", "STANDARD", "PEAK"];
-const BAND_LABELS: Record<string, string> = {
-  OFF_PEAK: "Off-peak",
-  STANDARD: "Standard",
-  PEAK: "Peak",
+type Messages = {
+  owner: {
+    slots: string;
+    peakEnabled: string;
+    peakOffOnly: string;
+    peakSlots: string;
+  };
+  timeBand: Record<string, string>;
 };
+
+const BAND_ORDER: TimeBandVariant[] = ["OFF_PEAK", "STANDARD", "PEAK"];
 
 export default function OwnerSlotsPage() {
   const [gyms, setGyms] = useState<GymData[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     const supabase = createClient();
@@ -61,7 +68,7 @@ export default function OwnerSlotsPage() {
     );
   }
 
-  if (loading) {
+  if (loading || !t) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10">
         <div className="h-40 animate-pulse rounded-xl bg-slate-100" />
@@ -71,7 +78,7 @@ export default function OwnerSlotsPage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      <h1 className="text-lg font-bold text-slate-900">Slots</h1>
+      <h1 className="text-lg font-bold text-slate-900">{t.owner.slots}</h1>
 
       {gyms.map((gym) => (
         <div key={gym.id} className="mt-6">
@@ -87,7 +94,7 @@ export default function OwnerSlotsPage() {
             </button>
           </div>
           <p className="mt-0.5 text-xs text-slate-500">
-            Peak slots: {gym.allowsPeak ? "Enabled" : "Off-peak only"}
+            {t.owner.peakSlots}: {gym.allowsPeak ? t.owner.peakEnabled : t.owner.peakOffOnly}
           </p>
 
           {BAND_ORDER.map((band) => {
@@ -95,7 +102,7 @@ export default function OwnerSlotsPage() {
             if (bandSlots.length === 0) return null;
             return (
               <div key={band} className="mt-3">
-                <Badge variant={band} className="mb-2">{BAND_LABELS[band]}</Badge>
+                <Badge variant={band} className="mb-2">{t.timeBand[band]}</Badge>
                 <div className="space-y-1">
                   {bandSlots.map((slot) => {
                     const pct = slot.capacity > 0 ? Math.round((slot.booked / slot.capacity) * 100) : 0;

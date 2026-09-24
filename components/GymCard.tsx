@@ -10,7 +10,6 @@ interface GymCardProps {
   gymName: string;
   activityName: string;
   distanceKm: number;
-  popularity: number;
   rating: number;
   timeBand: TimeBandVariant;
   creditCost: number;
@@ -23,7 +22,6 @@ export function GymCard({
   gymName,
   activityName,
   distanceKm,
-  popularity,
   rating,
   timeBand,
   creditCost,

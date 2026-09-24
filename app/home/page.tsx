@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { GymCard } from "@/components/GymCard";
 import { Button } from "@/components/ui/Button";
 import { distanceKm } from "@/lib/distance";
+import { useMessages } from "@/lib/useMessages";
 import Link from "next/link";
 
 const GANGNAM = { lat: 37.4979, lng: 127.0276 };
@@ -42,10 +43,16 @@ type FlatItem = {
   distance: number;
 };
 
-const TIME_BAND_LABELS: Record<string, string> = {
-  OFF_PEAK: "Off-peak",
-  STANDARD: "Standard",
-  PEAK: "Peak",
+type Messages = {
+  home: {
+    title: string;
+    subtitle: string;
+    toggleMap: string;
+    allSports: string;
+    allTimes: string;
+    noClasses: string;
+  };
+  timeBand: Record<string, string>;
 };
 
 export default function HomePage() {
@@ -54,6 +61,7 @@ export default function HomePage() {
   const [sportFilter, setSportFilter] = useState("");
   const [bandFilter, setBandFilter] = useState("");
   const [loading, setLoading] = useState(true);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition(
@@ -98,13 +106,18 @@ export default function HomePage() {
     });
   }, [items, sportFilter, bandFilter]);
 
+  if (!t) return null;
+
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold text-slate-900">Ketmon</h1>
+        <div>
+          <h1 className="text-lg font-bold text-slate-900">{t.home.title}</h1>
+          <p className="text-xs text-slate-500">{t.home.subtitle}</p>
+        </div>
         <Link href="/map">
           <Button variant="secondary" className="text-xs">
-            Map
+            {t.home.toggleMap}
           </Button>
         </Link>
       </div>
@@ -115,7 +128,7 @@ export default function HomePage() {
           onChange={(e) => setSportFilter(e.target.value)}
           className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700"
         >
-          <option value="">All sports</option>
+          <option value="">{t.home.allSports}</option>
           {sports.map((s) => (
             <option key={s} value={s}>{s}</option>
           ))}
@@ -126,10 +139,10 @@ export default function HomePage() {
           onChange={(e) => setBandFilter(e.target.value)}
           className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700"
         >
-          <option value="">All times</option>
-          <option value="OFF_PEAK">Off-peak</option>
-          <option value="STANDARD">Standard</option>
-          <option value="PEAK">Peak</option>
+          <option value="">{t.home.allTimes}</option>
+          <option value="OFF_PEAK">{t.timeBand.OFF_PEAK}</option>
+          <option value="STANDARD">{t.timeBand.STANDARD}</option>
+          <option value="PEAK">{t.timeBand.PEAK}</option>
         </select>
       </div>
 
@@ -144,7 +157,7 @@ export default function HomePage() {
 
         {!loading && filtered.length === 0 && (
           <p className="py-10 text-center text-sm text-slate-400">
-            No classes found
+            {t.home.noClasses}
           </p>
         )}
 
@@ -155,12 +168,11 @@ export default function HomePage() {
             gymName={item.gym.name}
             activityName={item.activity.name}
             distanceKm={item.distance}
-            popularity={item.gym.popularity}
             rating={item.gym.rating}
             timeBand={item.slot.timeBand}
             creditCost={item.slot.creditCost}
             startTime={item.slot.startTime}
-            timeBandLabel={TIME_BAND_LABELS[item.slot.timeBand] ?? item.slot.timeBand}
+            timeBandLabel={t.timeBand[item.slot.timeBand] ?? item.slot.timeBand}
           />
         ))}
       </div>

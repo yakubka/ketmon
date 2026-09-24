@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { creditsToWonDisplay } from "@/lib/pricing";
 import { createClient } from "@/lib/supabase/client";
+import { useMessages } from "@/lib/useMessages";
 
 type Slot = {
   id: string;
@@ -36,10 +37,14 @@ type Gym = {
 
 type FlatSlot = Slot & { activityName: string };
 
-const BAND_LABELS: Record<string, string> = {
-  OFF_PEAK: "Off-peak",
-  STANDARD: "Standard",
-  PEAK: "Peak",
+type Messages = {
+  timeBand: Record<string, string>;
+  detail: {
+    bookButton: string;
+    full: string;
+    cancelPolicy: string;
+    gymNotFound: string;
+  };
 };
 
 export default function GymDetailPage() {
@@ -49,6 +54,7 @@ export default function GymDetailPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [creditBalance, setCreditBalance] = useState(0);
   const [bookingSlot, setBookingSlot] = useState<FlatSlot | null>(null);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     fetch("/api/gyms")
@@ -88,7 +94,7 @@ export default function GymDetailPage() {
       });
   }
 
-  if (loading) {
+  if (loading || !t) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10">
         <div className="space-y-4">
@@ -103,7 +109,7 @@ export default function GymDetailPage() {
   if (!gym) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-sm text-slate-400">Gym not found</p>
+        <p className="text-sm text-slate-400">{t.detail.gymNotFound}</p>
       </div>
     );
   }
@@ -123,7 +129,7 @@ export default function GymDetailPage() {
       </div>
 
       <p className="mb-4 text-xs text-slate-400">
-        Free cancellation up to 6 hours before class
+        {t.detail.cancelPolicy}
       </p>
 
       <div className="space-y-3">
@@ -146,7 +152,7 @@ export default function GymDetailPage() {
                 <p className="mt-0.5 text-xs text-slate-500">{time}</p>
                 <div className="mt-1 flex items-center gap-2">
                   <Badge variant={slot.timeBand}>
-                    {BAND_LABELS[slot.timeBand]}
+                    {t.timeBand[slot.timeBand]}
                   </Badge>
                   <span className="text-xs font-semibold text-brand-700">
                     {slot.creditCost} credits
@@ -162,7 +168,7 @@ export default function GymDetailPage() {
                 className="text-xs"
                 onClick={() => !full && setBookingSlot(slot)}
               >
-                {full ? "Full" : "Book"}
+                {full ? t.detail.full : t.detail.bookButton}
               </Button>
             </Card>
           );

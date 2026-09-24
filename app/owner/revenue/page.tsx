@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 import { creditsToWonDisplay } from "@/lib/pricing";
+import { useMessages } from "@/lib/useMessages";
 
 type Commission = {
   id: string;
@@ -18,9 +19,23 @@ type RevenueData = {
   commissions: Commission[];
 };
 
+type Messages = {
+  owner: {
+    revenueTitle: string;
+    payoutsReceived: string;
+    noShowCompensation: string;
+    noShowMessage: string;
+    conversionCommissions: string;
+  };
+  wallet: {
+    credits: string;
+  };
+};
+
 export default function OwnerRevenuePage() {
   const [data, setData] = useState<RevenueData | null>(null);
   const [loading, setLoading] = useState(true);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     const supabase = createClient();
@@ -38,7 +53,7 @@ export default function OwnerRevenuePage() {
     });
   }, []);
 
-  if (loading || !data) {
+  if (loading || !data || !t) {
     return (
       <div className="mx-auto max-w-lg px-4 py-10">
         <div className="h-60 animate-pulse rounded-xl bg-slate-100" />
@@ -48,37 +63,37 @@ export default function OwnerRevenuePage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      <h1 className="text-lg font-bold text-slate-900">Revenue</h1>
+      <h1 className="text-lg font-bold text-slate-900">{t.owner.revenueTitle}</h1>
 
       <div className="mt-6 space-y-4">
         <Card className="p-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-            Payouts received
+            {t.owner.payoutsReceived}
           </p>
           <p className="mt-2 text-3xl font-bold text-slate-900">
             {data.payoutsTotal.toFixed(1)}
           </p>
           <p className="text-xs text-slate-400">
-            credits (~&#8361;{creditsToWonDisplay(Math.round(data.payoutsTotal)).toLocaleString()})
+            {t.wallet.credits} (~&#8361;{creditsToWonDisplay(Math.round(data.payoutsTotal)).toLocaleString()})
           </p>
         </Card>
 
         <Card className="border-emerald-100 bg-emerald-50/50 p-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
-            No-show compensation
+            {t.owner.noShowCompensation}
           </p>
           <p className="mt-1 text-sm text-emerald-700">
-            You still got paid when someone didn't show
+            {t.owner.noShowMessage}
           </p>
           <p className="mt-2 text-3xl font-bold text-emerald-700">
             {data.noShowCompensation.toFixed(1)}
           </p>
-          <p className="text-xs text-emerald-500">credits</p>
+          <p className="text-xs text-emerald-500">{t.wallet.credits}</p>
         </Card>
 
         <Card className="border-brand/20 bg-brand-50/50 p-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
-            Conversion commissions
+            {t.owner.conversionCommissions}
           </p>
           <p className="mt-2 text-3xl font-bold text-brand-700">
             &#8361;{data.commissionsTotal.toLocaleString()}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { creditsToWonDisplay } from "@/lib/pricing";
+import { useMessages } from "@/lib/useMessages";
 
 interface BookingConfirmModalProps {
   classSlot: {
@@ -17,6 +18,21 @@ interface BookingConfirmModalProps {
   onBooked: () => void;
 }
 
+type Messages = {
+  booking: {
+    confirmTitle: string;
+    creditCost: string;
+    balanceAfter: string;
+    cancelWindowNotice: string;
+    confirm: string;
+    cancel: string;
+    booking: string;
+    booked: string;
+    enjoy: string;
+    failed: string;
+  };
+};
+
 export function BookingConfirmModal({
   classSlot,
   userId,
@@ -25,6 +41,7 @@ export function BookingConfirmModal({
   onBooked,
 }: BookingConfirmModalProps) {
   const [state, setState] = useState<"confirm" | "loading" | "success" | "error">("confirm");
+  const t = useMessages<Messages>();
 
   const balanceAfter = creditBalance - classSlot.creditCost;
   const canAfford = balanceAfter >= 0;
@@ -48,17 +65,19 @@ export function BookingConfirmModal({
     }
   }
 
+  if (!t) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6">
         {state === "success" ? (
           <div className="text-center">
-            <p className="text-lg font-bold text-brand-600">Booked</p>
-            <p className="mt-2 text-sm text-slate-500">Enjoy your class</p>
+            <p className="text-lg font-bold text-brand-600">{t.booking.booked}</p>
+            <p className="mt-2 text-sm text-slate-500">{t.booking.enjoy}</p>
           </div>
         ) : (
           <>
-            <h2 className="text-lg font-bold text-slate-900">Confirm booking</h2>
+            <h2 className="text-lg font-bold text-slate-900">{t.booking.confirmTitle}</h2>
 
             {classSlot.activityName && (
               <p className="mt-1 text-sm text-slate-500">{classSlot.activityName}</p>
@@ -66,7 +85,7 @@ export function BookingConfirmModal({
 
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">Credit cost</span>
+                <span className="text-slate-500">{t.booking.creditCost}</span>
                 <span className="font-semibold">
                   {classSlot.creditCost} credits
                   <span className="ml-1 text-xs text-slate-400">
@@ -75,7 +94,7 @@ export function BookingConfirmModal({
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Balance after</span>
+                <span className="text-slate-500">{t.booking.balanceAfter}</span>
                 <span className={`font-semibold ${canAfford ? "text-slate-900" : "text-red-500"}`}>
                   {balanceAfter} credits
                 </span>
@@ -83,25 +102,25 @@ export function BookingConfirmModal({
             </div>
 
             <p className="mt-4 text-xs text-slate-400">
-              Free cancellation up to 6 hours before class
+              {t.booking.cancelWindowNotice}
             </p>
 
             {state === "error" && (
               <p className="mt-2 text-xs text-red-500">
-                Booking failed. Please try again.
+                {t.booking.failed}
               </p>
             )}
 
             <div className="mt-6 flex gap-3">
               <Button variant="ghost" onClick={onClose} className="flex-1">
-                Cancel
+                {t.booking.cancel}
               </Button>
               <Button
                 onClick={handleConfirm}
                 disabled={!canAfford || state === "loading"}
                 className="flex-1"
               >
-                {state === "loading" ? "Booking..." : "Confirm"}
+                {state === "loading" ? t.booking.booking : t.booking.confirm}
               </Button>
             </div>
           </>
