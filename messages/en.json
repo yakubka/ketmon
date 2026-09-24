@@ -17,7 +17,17 @@
     "noClasses": "No venues found",
     "nearby": "Nearby",
     "popular": "Popular",
-    "recommended": "Recommended"
+    "recommended": "Recommended",
+    "search": "Search gyms, sports, areas",
+    "filters": "Filters",
+    "apply": "Apply",
+    "clear": "Clear",
+    "area": "Area",
+    "distance": "Distance",
+    "any": "Any",
+    "quickBook": "Book",
+    "nextSlotLabel": "Next",
+    "noUpcoming": "No slots this week"
   },
   "map": {
     "details": "Details",
@@ -35,7 +45,11 @@
     "bookButton": "Book",
     "full": "Full",
     "cancelPolicy": "Free cancellation up to 6 hours before class",
-    "gymNotFound": "Gym not found"
+    "gymNotFound": "Gym not found",
+    "fitsSchedule": "Fits your schedule",
+    "dropIn": "Drop-in access",
+    "pickTime": "Pick a time",
+    "classes": "Classes"
   },
   "booking": {
     "confirmTitle": "Confirm booking",
@@ -157,6 +171,19 @@
       "credits": "credits",
       "perCredit": "credit",
       "popular": "POPULAR"
+    },
+    "timeStep": {
+      "title": "When are you usually free?",
+      "subtitle": "We'll prioritize time slots around this",
+      "morning": "Morning",
+      "morningRange": "6–11 AM",
+      "midday": "Midday",
+      "middayRange": "11 AM–3 PM",
+      "evening": "Evening",
+      "eveningRange": "3–7 PM",
+      "night": "Night",
+      "nightRange": "7–11 PM",
+      "next": "Continue"
     }
   },
   "owner": {

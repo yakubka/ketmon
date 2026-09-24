@@ -17,7 +17,17 @@
     "noClasses": "시설을 찾을 수 없습니다",
     "nearby": "가까운",
     "popular": "인기",
-    "recommended": "추천"
+    "recommended": "추천",
+    "search": "시설, 종목, 지역 검색",
+    "filters": "필터",
+    "apply": "적용",
+    "clear": "초기화",
+    "area": "지역",
+    "distance": "거리",
+    "any": "전체",
+    "quickBook": "예약",
+    "nextSlotLabel": "다음",
+    "noUpcoming": "이번 주 예약 가능한 시간이 없어요"
   },
   "map": {
     "details": "상세보기",
@@ -35,7 +45,11 @@
     "bookButton": "예약하기",
     "full": "마감",
     "cancelPolicy": "수업 6시간 전까지 무료 취소",
-    "gymNotFound": "시설을 찾을 수 없습니다"
+    "gymNotFound": "시설을 찾을 수 없습니다",
+    "fitsSchedule": "내 시간대와 맞아요",
+    "dropIn": "자유 이용",
+    "pickTime": "시간 선택",
+    "classes": "클래스"
   },
   "booking": {
     "confirmTitle": "예약 확인",
@@ -157,6 +171,19 @@
       "credits": "크레딧",
       "perCredit": "크레딧",
       "popular": "인기"
+    },
+    "timeStep": {
+      "title": "보통 언제 시간이 되세요?",
+      "subtitle": "그 시간대 위주로 슬롯을 먼저 보여드릴게요",
+      "morning": "아침",
+      "morningRange": "오전 6–11시",
+      "midday": "낮",
+      "middayRange": "오전 11시–오후 3시",
+      "evening": "저녁",
+      "eveningRange": "오후 3–7시",
+      "night": "밤",
+      "nightRange": "오후 7–11시",
+      "next": "계속하기"
     }
   },
   "owner": {

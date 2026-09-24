@@ -48,6 +48,8 @@ model User {
   creditBalance       Int      @default(30)
   planName            String?
   planExpiresAt       DateTime?
+  favoriteSports      String?
+  preferredTimeBand   String?
   googleAccessToken   String?
   googleRefreshToken  String?
   gyms                Gym[]

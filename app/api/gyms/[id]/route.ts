@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { kstDateString, kstDayRange } from "@/lib/kst";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const url = new URL(req.url);
-  const dateStr = url.searchParams.get("date");
+  const dateStr = url.searchParams.get("date") ?? kstDateString();
 
-  const dayStart = dateStr ? new Date(dateStr) : new Date();
-  dayStart.setHours(0, 0, 0, 0);
-  const dayEnd = new Date(dayStart);
-  dayEnd.setDate(dayEnd.getDate() + 1);
+  const { start: dayStart, end: dayEnd } = kstDayRange(dateStr);
 
   const now = new Date();
   const filterStart = dayStart < now ? now : dayStart;
