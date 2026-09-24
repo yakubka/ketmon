@@ -1,13 +1,7 @@
 import { PrismaClient, VenueTier } from "@prisma/client";
 import { resolveTimeBand, creditPrice } from "../lib/pricing";
-import fs from "fs";
-import path from "path";
 
 const prisma = new PrismaClient();
-
-// README §7 — 강남 Gangnam bounding box. Swap for 마포/홍대 if preferred.
-const BBOX = "37.490,127.010,37.530,127.050"; // south,west,north,east
-const CACHE_PATH = path.join(__dirname, "overpass-cache.json");
 
 const SPORTS = [
   { sport: "pilates", name: "필라테스 (Pilates)" },
@@ -18,33 +12,32 @@ const SPORTS = [
   { sport: "swimming", name: "수영 (Swimming)" },
 ];
 
-const SYNTHETIC_NAMES = [
-  "강남 피트니스", "역삼 요가룸", "선릉 복싱짐", "삼성 필라테스",
-  "논현 크로스핏", "청담 스튜디오", "신논현 헬스클럽", "대치 짐",
+const GYM_DATA = [
+  { name: "강남 피트니스", lat: 37.4979, lng: 127.0276, pop: 85 },
+  { name: "역삼 요가룸", lat: 37.5007, lng: 127.0365, pop: 72 },
+  { name: "선릉 복싱짐", lat: 37.5045, lng: 127.0490, pop: 65 },
+  { name: "삼성 필라테스", lat: 37.5088, lng: 127.0630, pop: 78 },
+  { name: "논현 크로스핏", lat: 37.5100, lng: 127.0250, pop: 42 },
+  { name: "청담 스튜디오", lat: 37.5200, lng: 127.0470, pop: 90 },
+  { name: "신논현 헬스클럽", lat: 37.5040, lng: 127.0240, pop: 55 },
+  { name: "대치 짐", lat: 37.4940, lng: 127.0580, pop: 30 },
+  { name: "도곡 요가", lat: 37.4880, lng: 127.0440, pop: 25 },
+  { name: "압구정 필라테스", lat: 37.5250, lng: 127.0280, pop: 88 },
+  { name: "학동 복싱", lat: 37.5140, lng: 127.0310, pop: 35 },
+  { name: "양재 헬스", lat: 37.4840, lng: 127.0350, pop: 48 },
+  { name: "개포 크로스핏", lat: 37.4790, lng: 127.0480, pop: 20 },
+  { name: "일원 스튜디오", lat: 37.4830, lng: 127.0820, pop: 28 },
+  { name: "수서 짐", lat: 37.4870, lng: 127.1000, pop: 22 },
+  { name: "잠실 필라테스", lat: 37.5130, lng: 127.1000, pop: 75 },
+  { name: "선정릉 요가", lat: 37.5100, lng: 127.0430, pop: 60 },
+  { name: "강남역 헬스", lat: 37.4970, lng: 127.0280, pop: 92 },
+  { name: "교대 복싱짐", lat: 37.4930, lng: 127.0140, pop: 50 },
+  { name: "매봉 크로스핏", lat: 37.4870, lng: 127.0330, pop: 18 },
+  { name: "한티 스튜디오", lat: 37.5010, lng: 127.0530, pop: 32 },
+  { name: "뱅뱅 피트니스", lat: 37.5020, lng: 127.0260, pop: 70 },
+  { name: "도산 요가룸", lat: 37.5220, lng: 127.0380, pop: 82 },
+  { name: "세곡 헬스장", lat: 37.4700, lng: 127.0600, pop: 15 },
 ];
-
-async function fetchOverpass() {
-  if (fs.existsSync(CACHE_PATH)) {
-    return JSON.parse(fs.readFileSync(CACHE_PATH, "utf-8"));
-  }
-  const query = `
-    [out:json][timeout:25];
-    (
-      node["leisure"="fitness_centre"](${BBOX});
-      node["leisure"="sports_centre"](${BBOX});
-      node["sport"~"yoga|fitness|boxing"](${BBOX});
-      way["leisure"="fitness_centre"](${BBOX});
-    );
-    out center;
-  `;
-  const res = await fetch("https://overpass-api.de/api/interpreter", {
-    method: "POST",
-    body: query,
-  });
-  const data = await res.json();
-  fs.writeFileSync(CACHE_PATH, JSON.stringify(data, null, 2));
-  return data;
-}
 
 function pickTier(popularity: number): VenueTier {
   if (popularity >= 70) return VenueTier.PREMIUM;
@@ -53,40 +46,25 @@ function pickTier(popularity: number): VenueTier {
 }
 
 async function main() {
-  const overpass = await fetchOverpass();
-  const elements = (overpass.elements ?? []).slice(0, 24);
-
-  let synthIdx = 0;
   const gyms = [];
 
-  for (const el of elements) {
-    const lat = el.lat ?? el.center?.lat;
-    const lng = el.lon ?? el.center?.lon;
-    if (!lat || !lng) continue;
-
-    const name = el.tags?.name ?? SYNTHETIC_NAMES[synthIdx++ % SYNTHETIC_NAMES.length];
-    const popularity = Math.floor(Math.random() * 100);
-    const tier = pickTier(popularity);
-
-    // README §3.5 — two-tier supply strategy baked into seed data.
-    // Popular PREMIUM/MID gyms: off-peak only. NEIGHBORHOOD/low-popularity: peak enabled.
-    const allowsPeak = tier === VenueTier.NEIGHBORHOOD || popularity < 40;
+  for (const g of GYM_DATA) {
+    const tier = pickTier(g.pop);
+    const allowsPeak = tier === VenueTier.NEIGHBORHOOD || g.pop < 40;
 
     const gym = await prisma.gym.create({
       data: {
-        name,
-        lat,
-        lng,
-        address: el.tags?.["addr:full"] ?? null,
+        name: g.name,
+        lat: g.lat,
+        lng: g.lng,
         tier,
         allowsPeak,
         rating: Math.round((3.8 + Math.random() * 1.2) * 10) / 10,
-        popularity,
+        popularity: g.pop,
       },
     });
     gyms.push(gym);
 
-    // 3-6 activities per gym
     const shuffled = [...SPORTS].sort(() => Math.random() - 0.5);
     const activities = shuffled.slice(0, 3 + Math.floor(Math.random() * 4));
     for (const a of activities) {
@@ -94,16 +72,15 @@ async function main() {
         data: { gymId: gym.id, name: a.name, sport: a.sport, durationMin: 50 },
       });
 
-      // Slots across the next 7 days
       for (let day = 0; day < 7; day++) {
-        const hours = [8, 12, 18]; // one peak-ish, one off-peak, one peak/evening sample
+        const hours = [8, 12, 18];
         for (const hour of hours) {
           const startTime = new Date();
           startTime.setDate(startTime.getDate() + day);
           startTime.setHours(hour, 0, 0, 0);
 
           const band = resolveTimeBand(startTime);
-          if (band === "PEAK" && !gym.allowsPeak) continue; // respect allowsPeak
+          if (band === "PEAK" && !gym.allowsPeak) continue;
 
           await prisma.classSlot.create({
             data: {
@@ -121,7 +98,6 @@ async function main() {
     }
   }
 
-  // Demo personas — README §7.5
   const demoMember = await prisma.user.create({
     data: { email: "demo.member@ketmon.app", name: "데모 회원", role: "MEMBER", creditBalance: 30 },
   });
@@ -158,11 +134,7 @@ async function main() {
       data: { creditBalance: { decrement: futureSlot.creditCost } },
     });
     await prisma.creditTransaction.create({
-      data: {
-        userId: demoMember.id,
-        amount: -futureSlot.creditCost,
-        type: "SPEND",
-      },
+      data: { userId: demoMember.id, amount: -futureSlot.creditCost, type: "SPEND" },
     });
   }
 
@@ -185,11 +157,7 @@ async function main() {
       data: { creditBalance: { decrement: pastSlot.creditCost } },
     });
     await prisma.creditTransaction.create({
-      data: {
-        userId: demoMember.id,
-        amount: -pastSlot.creditCost,
-        type: "SPEND",
-      },
+      data: { userId: demoMember.id, amount: -pastSlot.creditCost, type: "SPEND" },
     });
   }
 
