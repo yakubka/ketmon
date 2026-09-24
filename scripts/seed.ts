@@ -134,7 +134,68 @@ async function main() {
     await prisma.gym.update({ where: { id: g.id }, data: { ownerId: demoOwner.id } });
   }
 
+  const ownerSlots = await prisma.classSlot.findMany({
+    where: { gymId: { in: ownerGyms.map((g) => g.id) } },
+    orderBy: { startTime: "asc" },
+  });
+
+  const futureSlot = ownerSlots.find((s) => new Date(s.startTime).getTime() > Date.now() + 7 * 60 * 60 * 1000);
+  if (futureSlot) {
+    await prisma.booking.create({
+      data: {
+        userId: demoMember.id,
+        classSlotId: futureSlot.id,
+        status: "BOOKED",
+        creditsPaid: futureSlot.creditCost,
+      },
+    });
+    await prisma.classSlot.update({
+      where: { id: futureSlot.id },
+      data: { booked: { increment: 1 } },
+    });
+    await prisma.user.update({
+      where: { id: demoMember.id },
+      data: { creditBalance: { decrement: futureSlot.creditCost } },
+    });
+    await prisma.creditTransaction.create({
+      data: {
+        userId: demoMember.id,
+        amount: -futureSlot.creditCost,
+        type: "SPEND",
+      },
+    });
+  }
+
+  const pastSlot = ownerSlots.find((s) => new Date(s.startTime).getTime() < Date.now());
+  if (pastSlot) {
+    await prisma.booking.create({
+      data: {
+        userId: demoMember.id,
+        classSlotId: pastSlot.id,
+        status: "BOOKED",
+        creditsPaid: pastSlot.creditCost,
+      },
+    });
+    await prisma.classSlot.update({
+      where: { id: pastSlot.id },
+      data: { booked: { increment: 1 } },
+    });
+    await prisma.user.update({
+      where: { id: demoMember.id },
+      data: { creditBalance: { decrement: pastSlot.creditCost } },
+    });
+    await prisma.creditTransaction.create({
+      data: {
+        userId: demoMember.id,
+        amount: -pastSlot.creditCost,
+        type: "SPEND",
+      },
+    });
+  }
+
   console.log(`Seeded ${gyms.length} gyms, demo member ${demoMember.id}, demo owner ${demoOwner.id}`);
+  if (futureSlot) console.log("Demo booking (cancellable, future) created");
+  if (pastSlot) console.log("Demo booking (past, ready for attend/no-show) created");
 }
 
 main().finally(() => prisma.$disconnect());

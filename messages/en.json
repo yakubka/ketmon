@@ -16,6 +16,9 @@
     "allTimes": "All times",
     "noClasses": "No classes found"
   },
+  "map": {
+    "details": "Details"
+  },
   "timeBand": {
     "OFF_PEAK": "Off-peak",
     "STANDARD": "Standard",
@@ -44,6 +47,8 @@
     "upcoming": "Upcoming",
     "past": "Past",
     "cancel": "Cancel",
+    "confirmCancel": "Confirm cancel",
+    "keepBooking": "Keep booking",
     "freeCancel": "Free cancel (full refund)",
     "lateCancel": "Late cancel (no refund)",
     "noUpcoming": "No upcoming bookings",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 const LOCALES = [
   { code: "ko", label: "한국어" },
@@ -17,10 +18,21 @@ export function LanguageToggle() {
     if (stored) setLocale(stored);
   }, []);
 
-  function toggle() {
+  async function toggle() {
     const next = locale === "ko" ? "en" : "ko";
     setLocale(next);
     localStorage.setItem("ketmon-locale", next);
+
+    const supabase = createClient();
+    const { data } = await supabase.auth.getUser();
+    if (data.user?.email) {
+      fetch("/api/user/locale", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.user.email, locale: next }),
+      }).catch(() => {});
+    }
+
     window.location.reload();
   }
 

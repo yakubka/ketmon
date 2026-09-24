@@ -29,6 +29,8 @@ type Messages = {
     upcoming: string;
     past: string;
     cancel: string;
+    confirmCancel: string;
+    keepBooking: string;
     freeCancel: string;
     lateCancel: string;
     noUpcoming: string;
@@ -190,14 +192,14 @@ export default function BookingsPage() {
             </p>
             <div className="mt-6 flex gap-3">
               <Button variant="ghost" onClick={() => setConfirmCancel(null)} className="flex-1">
-                {t.myBookings.cancel}
+                {t.myBookings.keepBooking}
               </Button>
               <Button
                 variant="primary"
                 onClick={() => handleCancel(confirmCancel)}
                 className="flex-1 bg-red-500 hover:bg-red-600"
               >
-                {t.myBookings.cancel}
+                {t.myBookings.confirmCancel}
               </Button>
             </div>
           </div>

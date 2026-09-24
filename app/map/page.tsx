@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { useMessages } from "@/lib/useMessages";
 
 const MapContent = dynamic(() => import("@/components/MapContent"), {
   ssr: false,
@@ -22,8 +23,13 @@ type Gym = {
   rating: number;
 };
 
+type Messages = {
+  home: { toggleList: string };
+};
+
 export default function MapPage() {
   const [gyms, setGyms] = useState<Gym[]>([]);
+  const t = useMessages<Messages>();
 
   useEffect(() => {
     fetch("/api/gyms")
@@ -36,7 +42,7 @@ export default function MapPage() {
       <div className="absolute left-4 top-4 z-[1000]">
         <Link href="/home">
           <Button variant="secondary" className="text-xs">
-            List
+            {t?.home.toggleList ?? "List"}
           </Button>
         </Link>
       </div>

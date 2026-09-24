@@ -16,6 +16,9 @@
     "allTimes": "모든 시간",
     "noClasses": "수업이 없습니다"
   },
+  "map": {
+    "details": "상세보기"
+  },
   "timeBand": {
     "OFF_PEAK": "한가한 시간",
     "STANDARD": "일반",
@@ -44,6 +47,8 @@
     "upcoming": "예정된 예약",
     "past": "지난 예약",
     "cancel": "취소하기",
+    "confirmCancel": "취소 확인",
+    "keepBooking": "예약 유지",
     "freeCancel": "무료 취소 (전액 환불)",
     "lateCancel": "늦은 취소 (환불 불가)",
     "noUpcoming": "예정된 예약이 없습니다",
