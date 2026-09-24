@@ -4,7 +4,8 @@ import { kstDateString, kstDayRange } from "@/lib/kst";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const url = new URL(req.url);
   const dateStr = url.searchParams.get("date") ?? kstDateString();
 
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   const filterStart = dayStart < now ? now : dayStart;
 
   const gym = await prisma.gym.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       activities: {
         include: {
@@ -31,11 +32,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json(gym);
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const body = await req.json();
 
   const updated = await prisma.gym.update({
-    where: { id: params.id },
+    where: { id },
     data: { allowsPeak: body.allowsPeak },
   });
 

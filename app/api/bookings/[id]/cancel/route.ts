@@ -5,10 +5,11 @@ import { deleteCalendarEvent } from "@/lib/google-calendar";
 
 const prisma = new PrismaClient();
 
-export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const result = await prisma.$transaction(async (tx) => {
     const booking = await tx.booking.findUniqueOrThrow({
-      where: { id: params.id },
+      where: { id },
       include: { classSlot: true },
     });
 
