@@ -51,7 +51,6 @@ const GYM_IMAGES = [
   "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1593079831268-3381b0db4a77?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=400&h=300&fit=crop",
@@ -59,6 +58,13 @@ const GYM_IMAGES = [
   "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1579758629938-03607ccdbaba?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1546920120-d60663fd4965?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1758957646695-ec8bce3df462?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1765302840608-6c67281260c3?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1761035190790-aa1a3472f7fc?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1771947550396-1fb9b5adb698?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1574909524182-c557eb865c5b?w=400&h=300&fit=crop",
 ];
 
 const FALLBACK_GYMS = [

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { WheelPicker } from "@/components/WheelPicker";
+import { GymImage } from "@/components/GymImage";
 import { SportIcon } from "@/components/icons/SportIcons";
 import { LocationPinIcon } from "@/components/icons/UIIcons";
 import { StarIcon } from "@/components/icons/StarIcon";
@@ -155,15 +156,14 @@ export default function GymDetailPage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      {gym.imageUrl && (
-        <div className="mb-4 overflow-hidden rounded-xl">
-          <img
-            src={gym.imageUrl}
-            alt={gym.name}
-            className="h-48 w-full object-cover"
-          />
-        </div>
-      )}
+      <div className="mb-4 overflow-hidden rounded-xl">
+        <GymImage
+          src={gym.imageUrl}
+          alt={gym.name}
+          sport={gym.activities[0]?.sport ?? "gym"}
+          className="h-48 w-full object-cover"
+        />
+      </div>
       <div className="mb-4">
         <h1 className="text-xl font-bold text-slate-900">{gym.name}</h1>
         <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">

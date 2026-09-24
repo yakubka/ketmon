@@ -6,6 +6,7 @@ import { StarIcon } from "@/components/icons/StarIcon";
 import { SportIcon } from "@/components/icons/SportIcons";
 import { SearchIcon, SlidersIcon, LocationPinIcon, BoltIcon } from "@/components/icons/UIIcons";
 import { FilterSheet } from "@/components/FilterSheet";
+import { GymImage } from "@/components/GymImage";
 import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { distanceKm } from "@/lib/distance";
 import { bandForHour } from "@/lib/time-band";
@@ -334,17 +335,12 @@ export default function HomePage() {
                 <Link key={gym.id} href={`/gym/${gym.id}`}>
                   <Card className="group flex h-full flex-col overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]">
                     <div className="relative aspect-[4/3]">
-                      {gym.imageUrl ? (
-                        <img
-                          src={gym.imageUrl}
-                          alt={gym.name}
-                          className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-teal-50 to-emerald-50">
-                          <SportIcon sport={gym.sports[0] ?? "gym"} className="h-7 w-7 text-teal-500" />
-                        </div>
-                      )}
+                      <GymImage
+                        src={gym.imageUrl}
+                        alt={gym.name}
+                        sport={gym.sports[0] ?? "gym"}
+                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      />
                       <div className="absolute bottom-1.5 left-1.5 flex items-center gap-0.5 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
                         <StarIcon className="h-2.5 w-2.5 text-amber-400" />
                         {gym.rating.toFixed(1)}

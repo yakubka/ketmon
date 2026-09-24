@@ -8,7 +8,6 @@ const PNG_ICONS: Record<string, string> = {
   martial_arts: "/icons/material-symbols--sports-martial-arts-rounded.png",
   dance: "/icons/pinhead--person-dancing-with-sparkles.png",
   baseball: "/icons/glyphs--baseball-1-bold.png",
-  crossfit: "/icons/fluent--sport-soccer-20-regular.png",
 };
 
 function PilatesGlyph({ className }: IconProps) {
@@ -23,8 +22,17 @@ function PilatesGlyph({ className }: IconProps) {
 function TennisGlyph({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
-      <circle cx="10" cy="9" r="6" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M10 3c2.5 2 2.5 10 0 12M10 3c-2.5 2-2.5 10 0 12M4.2 7.5h11.6M4.2 10.5h11.6M15 15l6 6" />
+      <ellipse cx="10" cy="8.5" rx="6" ry="7" />
+      <path strokeLinecap="round" d="M6 4.5v8M8 3.3v10.4M10 3v11M12 3.3v10.4M14 4.5v8M4.3 6h11.4M4.3 8.5h11.4M4.3 11h11.4" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10 15.3v3M8.3 21h3.4l-.8-2.7h-1.8z" />
+    </svg>
+  );
+}
+
+function CrossfitGlyph({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 8v8M3 10v4M8 5v14M6.5 8v8M17.5 8v8M16 5v14M21 10v4M20 8v8M8 12h8" />
     </svg>
   );
 }
@@ -41,6 +49,7 @@ function GenericSportGlyph({ className }: IconProps) {
 const SVG_GLYPHS: Record<string, (p: IconProps) => JSX.Element> = {
   pilates: PilatesGlyph,
   tennis: TennisGlyph,
+  crossfit: CrossfitGlyph,
 };
 
 export function SportIcon({ sport, className, active }: { sport: string; className?: string; active?: boolean }) {
