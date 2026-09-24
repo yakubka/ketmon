@@ -42,6 +42,20 @@ const SPORTS = [
   { sport: "martial_arts", name: "무술 (Martial Arts)" },
 ];
 
+const CLASS_DAY_PATTERNS = [
+  [1, 3, 5],
+  [2, 4, 6],
+  [0, 2, 4],
+  [1, 4, 6],
+  [0, 3, 5],
+  [2, 5, 6],
+];
+
+function dayPatternFor(sport: string, gymIndex: number, activityIndex: number): number[] | null {
+  if (sport === "gym") return null;
+  return CLASS_DAY_PATTERNS[(gymIndex * 3 + activityIndex) % CLASS_DAY_PATTERNS.length];
+}
+
 const GYM_IMAGES = [
   "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=300&fit=crop",
@@ -208,16 +222,20 @@ async function main() {
         ? [...osmActivities, ...shuffled.filter((s) => !osmActivities.some((o) => o.sport === s.sport)).slice(0, 2)]
         : shuffled.slice(0, 3 + Math.floor(Math.random() * 3));
 
-      for (const a of picked) {
+      for (let ai = 0; ai < picked.length; ai++) {
+        const a = picked[ai];
         const activity = await prisma.activity.create({
           data: { gymId: gym.id, name: a.name, sport: a.sport, durationMin: 50 },
         });
+        const pattern = dayPatternFor(a.sport, i, ai);
 
         for (let day = 0; day < 7; day++) {
           for (const hour of [7, 10, 12, 15, 18, 20]) {
             const startTime = new Date();
             startTime.setDate(startTime.getDate() + day);
             startTime.setHours(hour, 0, 0, 0);
+
+            if (pattern && !pattern.includes(startTime.getDay())) continue;
 
             const band = resolveTimeBand(startTime);
             if (band === "PEAK" && !gym.allowsPeak) continue;
@@ -260,16 +278,20 @@ async function main() {
 
       const shuffled = [...SPORTS].sort(() => Math.random() - 0.5);
       const activities = shuffled.slice(0, 3 + Math.floor(Math.random() * 4));
-      for (const a of activities) {
+      for (let ai = 0; ai < activities.length; ai++) {
+        const a = activities[ai];
         const activity = await prisma.activity.create({
           data: { gymId: gym.id, name: a.name, sport: a.sport, durationMin: 50 },
         });
+        const pattern = dayPatternFor(a.sport, i, ai);
 
         for (let day = 0; day < 7; day++) {
           for (const hour of [7, 10, 12, 15, 18, 20]) {
             const startTime = new Date();
             startTime.setDate(startTime.getDate() + day);
             startTime.setHours(hour, 0, 0, 0);
+
+            if (pattern && !pattern.includes(startTime.getDay())) continue;
 
             const band = resolveTimeBand(startTime);
             if (band === "PEAK" && !gym.allowsPeak) continue;
