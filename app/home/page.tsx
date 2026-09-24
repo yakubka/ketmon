@@ -245,7 +245,7 @@ export default function HomePage() {
           />
         </div>
         <button
-          onClick={() => setFilterOpen(true)}
+          onClick={() => setFilterOpen((v) => !v)}
           className="relative flex h-[42px] w-[42px] flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
           aria-label={t.home.filters}
         >
@@ -274,11 +274,33 @@ export default function HomePage() {
                 sportFilter === sport ? "bg-teal-500 text-white shadow-md shadow-teal-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              <SportIcon sport={sport} className="h-3.5 w-3.5" />
+              <SportIcon sport={sport} className="h-3.5 w-3.5" active={sportFilter === sport} />
               {formatSport(sport, locale)}
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="px-4">
+        <FilterSheet
+          open={filterOpen}
+          onClose={() => setFilterOpen(false)}
+          title={t.home.filters}
+          areaLabel={t.home.area}
+          areaOptions={areaOptions}
+          areaValue={areaFilter}
+          onAreaChange={setAreaFilter}
+          distanceLabel={t.home.distance}
+          distanceOptions={distanceOptions}
+          distanceValue={distanceFilter}
+          onDistanceChange={setDistanceFilter}
+          clearLabel={t.home.clear}
+          applyLabel={t.home.apply}
+          onClear={() => {
+            setAreaFilter("");
+            setDistanceFilter("0");
+          }}
+        />
       </div>
 
       <div className="mt-4 px-4">
@@ -357,6 +379,7 @@ export default function HomePage() {
                           <div className="flex items-center justify-between gap-1.5 border-t border-slate-100 pt-2">
                             <span className="truncate text-[10px] text-slate-400">
                               {t.home.nextSlotLabel} <span className="font-semibold text-slate-600">{nextTime}</span>
+                              {fitsSchedule && <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-teal-500 align-middle" />}
                             </span>
                             <button
                               onClick={(e) => {
@@ -364,11 +387,7 @@ export default function HomePage() {
                                 e.stopPropagation();
                                 setQuickBook({ gymName: gym.name, slot: gym.nextSlot! });
                               }}
-                              className={`inline-flex flex-shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold transition-colors ${
-                                fitsSchedule
-                                  ? "bg-teal-500 text-white hover:bg-teal-600"
-                                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                              }`}
+                              className="inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-teal-500 px-2.5 py-1 text-[10px] font-semibold text-white shadow-sm shadow-teal-200 transition-colors hover:bg-teal-600"
                             >
                               <BoltIcon className="h-2.5 w-2.5" />
                               {t.home.quickBook}
@@ -386,26 +405,6 @@ export default function HomePage() {
           </div>
         )}
       </div>
-
-      <FilterSheet
-        open={filterOpen}
-        onClose={() => setFilterOpen(false)}
-        title={t.home.filters}
-        areaLabel={t.home.area}
-        areaOptions={areaOptions}
-        areaValue={areaFilter}
-        onAreaChange={setAreaFilter}
-        distanceLabel={t.home.distance}
-        distanceOptions={distanceOptions}
-        distanceValue={distanceFilter}
-        onDistanceChange={setDistanceFilter}
-        clearLabel={t.home.clear}
-        applyLabel={t.home.apply}
-        onClear={() => {
-          setAreaFilter("");
-          setDistanceFilter("0");
-        }}
-      />
 
       {quickBook && userId && (
         <BookingConfirmModal
