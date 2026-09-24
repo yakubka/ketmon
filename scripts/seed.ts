@@ -1,9 +1,35 @@
 import { PrismaClient, VenueTier } from "@prisma/client";
 import { resolveTimeBand, creditPrice } from "../lib/pricing";
+import { distanceKm } from "../lib/distance";
 
 const prisma = new PrismaClient();
 
 const BBOX = "37.400,126.665,37.425,126.695";
+const INCHEON_CENTER = { lat: 37.4106, lng: 126.6784 };
+const KEEP_RADIUS_KM = 8;
+
+async function pruneStaleGyms() {
+  const gyms = await prisma.gym.findMany({ select: { id: true, lat: true, lng: true } });
+  const staleIds = gyms
+    .filter((g) => distanceKm(INCHEON_CENTER.lat, INCHEON_CENTER.lng, g.lat, g.lng) > KEEP_RADIUS_KM)
+    .map((g) => g.id);
+
+  if (staleIds.length === 0) return;
+
+  const staleSlots = await prisma.classSlot.findMany({
+    where: { gymId: { in: staleIds } },
+    select: { id: true },
+  });
+  const staleSlotIds = staleSlots.map((s) => s.id);
+
+  await prisma.booking.deleteMany({ where: { classSlotId: { in: staleSlotIds } } });
+  await prisma.commission.deleteMany({ where: { gymId: { in: staleIds } } });
+  await prisma.classSlot.deleteMany({ where: { gymId: { in: staleIds } } });
+  await prisma.activity.deleteMany({ where: { gymId: { in: staleIds } } });
+  await prisma.gym.deleteMany({ where: { id: { in: staleIds } } });
+
+  console.log(`Pruned ${staleIds.length} gym(s) outside ${KEEP_RADIUS_KM}km of Incheon Yeonsu`);
+}
 
 const SPORTS = [
   { sport: "pilates", name: "필라테스 (Pilates)" },
@@ -126,6 +152,8 @@ function sportToActivity(sport?: string): { sport: string; name: string }[] {
 }
 
 async function main() {
+  await pruneStaleGyms();
+
   const osmVenues = await fetchOverpass();
   const gyms = [];
 
