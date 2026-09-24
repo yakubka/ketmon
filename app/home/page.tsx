@@ -108,11 +108,8 @@ export default function HomePage() {
     return Array.from(set).sort();
   }, [gyms]);
 
-  const MAX_DISTANCE_KM = 10;
-
   const filtered = useMemo(() => {
     return items.filter((item) => {
-      if (item.distance > MAX_DISTANCE_KM) return false;
       if (sportFilter && item.activity.sport !== sportFilter) return false;
       if (bandFilter && item.slot.timeBand !== bandFilter) return false;
       if (areaFilter && item.gym.area !== areaFilter) return false;
