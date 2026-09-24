@@ -21,6 +21,7 @@ type Gym = {
   lat: number;
   lng: number;
   rating: number;
+  imageUrl: string | null;
 };
 
 type Messages = {

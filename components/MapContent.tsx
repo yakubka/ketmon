@@ -6,6 +6,7 @@ import Link from "next/link";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { StarIcon } from "@/components/icons/StarIcon";
+import { GymImage } from "@/components/GymImage";
 
 const icon = new L.Icon({
   iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
@@ -32,6 +33,7 @@ type Gym = {
   lat: number;
   lng: number;
   rating: number;
+  imageUrl: string | null;
 };
 
 type RouteInfo = {
@@ -98,7 +100,7 @@ export default function MapContent({ gyms }: { gyms: Gym[] }) {
 
   return (
     <MapContainer
-      center={[37.4979, 127.0276]}
+      center={[37.4106, 126.6784]}
       zoom={14}
       className="h-full w-full"
     >
@@ -119,6 +121,12 @@ export default function MapContent({ gyms }: { gyms: Gym[] }) {
         <Marker key={gym.id} position={[gym.lat, gym.lng]} icon={icon}>
           <Popup>
             <div className="text-sm">
+              <GymImage
+                src={gym.imageUrl}
+                alt={gym.name}
+                sport="gym"
+                className="mb-1.5 h-20 w-full rounded-md object-cover"
+              />
               <p className="font-semibold">{gym.name}</p>
               <p className="flex items-center gap-1 text-slate-500">
                 <StarIcon className="h-3 w-3 text-amber-400" />
