@@ -50,7 +50,19 @@
     "fitsSchedule": "Fits your schedule",
     "dropIn": "Drop-in access",
     "pickTime": "Pick a time",
-    "classes": "Classes"
+    "classes": "Classes",
+    "address": "Address",
+    "closesAt": "Closes",
+    "trainer": "Trainer available",
+    "trainerFee": "credits",
+    "parking": "Parking available",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo",
+    "closePhotoViewer": "Close photo viewer"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "noReviews": "No reviews yet"
   },
   "booking": {
     "confirmTitle": "Confirm booking",
@@ -113,7 +125,8 @@
     "member": "Member",
     "dashboard": "Dashboard",
     "slots": "Slots",
-    "revenue": "Revenue"
+    "revenue": "Revenue",
+    "navigation": "Primary navigation"
   },
   "landing": {
     "hero": {

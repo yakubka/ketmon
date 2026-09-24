@@ -66,6 +66,11 @@ model Gym {
   address    String?
   area       String?
   imageUrl   String?
+  images     String[]    @default([])
+  closesAt   String?
+  hasTrainer Boolean     @default(false)
+  trainerFee Int?
+  hasParking Boolean     @default(false)
   tier       VenueTier
   allowsPeak Boolean     @default(false)
   rating     Float       @default(4.5)
@@ -74,6 +79,17 @@ model Gym {
   owner      User?       @relation(fields: [ownerId], references: [id])
   activities Activity[]
   slots      ClassSlot[]
+  reviews    Review[]
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  gymId      String
+  gym        Gym      @relation(fields: [gymId], references: [id])
+  authorName String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
 }
 
 model Activity {

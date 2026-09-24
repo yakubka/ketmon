@@ -293,31 +293,31 @@ export default function WalletPage() {
 
       <section className="mt-6">
         <h2 className="text-sm font-semibold text-slate-500">{t.wallet.buyCredits}</h2>
-        <div className="mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-0.5 pb-2" style={{ scrollbarWidth: "none" }}>
+        <div className="mt-3 grid grid-cols-3 gap-2">
           {PLANS.map((plan) => {
             const visits = Math.round(plan.credits / 4);
             return (
               <div
                 key={plan.credits}
-                className={`relative min-w-[220px] flex-shrink-0 snap-center overflow-hidden rounded-3xl shadow-lg transition-transform active:scale-[0.97] ${plan.popular ? "ring-2 ring-offset-2 ring-fuchsia-400" : ""}`}
+                className={`relative min-w-0 overflow-hidden rounded-2xl shadow-lg transition-transform active:scale-[0.97] ${plan.popular ? "ring-2 ring-fuchsia-400" : ""}`}
               >
                 {plan.popular && (
-                  <span className="absolute right-3 top-3 z-10 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-fuchsia-600 shadow-sm backdrop-blur-sm">
+                  <span className="absolute right-1.5 top-1.5 z-10 rounded-full bg-white/90 px-1 py-0.5 text-[7px] font-semibold leading-none text-fuchsia-600 shadow-sm backdrop-blur-sm">
                     POPULAR
                   </span>
                 )}
-                <div className={`relative overflow-hidden bg-gradient-to-br ${plan.gradient} px-4 pb-4 pt-5`}>
-                  <div className="pointer-events-none absolute -right-4 -top-6 h-24 w-24 rounded-full bg-white/10" />
-                  <p className="text-xs font-semibold uppercase tracking-wide text-white/80">{plan.label}</p>
-                  <p className="mt-1 text-5xl font-black leading-none text-white drop-shadow-sm">{plan.credits}</p>
-                  <p className="mt-1 text-xs text-white/80">{t.wallet.credits} · {plan.days}d</p>
+                <div className={`relative overflow-hidden bg-gradient-to-br ${plan.gradient} px-2.5 pb-2.5 pt-3`}>
+                  <div className="pointer-events-none absolute -right-4 -top-6 h-16 w-16 rounded-full bg-white/10" />
+                  <p className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-white/80">{plan.label}</p>
+                  <p className="mt-1 text-3xl font-black leading-none text-white drop-shadow-sm">{plan.credits}</p>
+                  <p className="mt-1 truncate text-[10px] text-white/80">{t.wallet.credits} · {plan.days}d</p>
                 </div>
-                <div className="bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
-                  <p className="mt-0.5 text-xs text-slate-400">~{visits} visits</p>
+                <div className="bg-white p-2.5">
+                  <p className="text-xs font-semibold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
+                  <p className="mt-0.5 truncate text-[10px] text-slate-400">~{visits} visits</p>
                   <Button
                     variant="primary"
-                    className="mt-3 w-full !bg-slate-900 text-xs hover:!bg-slate-800"
+                    className="mt-2 w-full !bg-slate-900 px-1 text-[10px] hover:!bg-slate-800"
                     onClick={() => handleTopUp(plan.credits)}
                     disabled={topUpLoading === plan.credits}
                   >

@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="bg-slate-50 text-slate-900 antialiased">
-        <div className="pb-16">{children}</div>
+        <div className="pb-24">{children}</div>
         <NavBarWrapper />
         <DemoPanelWrapper />
       </body>

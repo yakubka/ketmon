@@ -8,8 +8,10 @@ import { Card } from "@/components/ui/Card";
 import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { WheelPicker } from "@/components/WheelPicker";
 import { GymImage } from "@/components/GymImage";
+import { GymDetailsInfo } from "@/components/GymDetailsInfo";
+import { GymPhotoCarousel } from "@/components/GymPhotoCarousel";
+import { GymReviews } from "@/components/GymReviews";
 import { SportIcon } from "@/components/icons/SportIcons";
-import { LocationPinIcon } from "@/components/icons/UIIcons";
 import { StarIcon } from "@/components/icons/StarIcon";
 import { createClient } from "@/lib/supabase/client";
 import { useMessages } from "@/lib/useMessages";
@@ -38,6 +40,11 @@ type Gym = {
   rating: number;
   address: string | null;
   imageUrl: string | null;
+  images: string[];
+  closesAt: string | null;
+  hasTrainer: boolean;
+  trainerFee: number | null;
+  hasParking: boolean;
   tier: string;
   activities: Activity[];
 };
@@ -144,6 +151,7 @@ export default function GymDetailPage() {
 
   const dropInActivities = gym.activities.filter((a) => a.sport === "gym" && a.slots.length > 0);
   const classActivities = gym.activities.filter((a) => a.sport !== "gym");
+  const gymImages = gym.images.length > 0 ? gym.images : gym.imageUrl ? [gym.imageUrl] : [];
 
   const classSlots: FlatSlot[] = classActivities
     .flatMap((a) => a.slots.map((s) => ({ ...s, activityName: a.name })))
@@ -156,24 +164,31 @@ export default function GymDetailPage() {
 
   return (
     <div className="mx-auto max-w-lg px-4 py-6">
-      <div className="mb-4 overflow-hidden rounded-xl">
-        <GymImage
-          src={gym.imageUrl}
-          alt={gym.name}
-          sport={gym.activities[0]?.sport ?? "gym"}
-          className="h-48 w-full object-cover"
-        />
-      </div>
-      <div className="mb-4">
-        <h1 className="text-xl font-bold text-slate-900">{gym.name}</h1>
-        <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
-          <StarIcon className="h-3.5 w-3.5 text-amber-400" /> {gym.rating.toFixed(1)}
-          {gym.address && (
-            <span className="flex items-center gap-0.5">
-              <LocationPinIcon className="h-3.5 w-3.5" /> {gym.address}
-            </span>
-          )}
-        </p>
+      <div className="mb-5 grid gap-4 sm:grid-cols-2">
+        {gymImages.length > 0 ? (
+          <GymPhotoCarousel images={gymImages} />
+        ) : (
+          <GymImage
+            src={gym.imageUrl}
+            alt={gym.name}
+            sport={gym.activities[0]?.sport ?? "gym"}
+            className="aspect-square h-full w-full rounded-2xl object-cover"
+          />
+        )}
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">{gym.name}</h1>
+          <p className="mt-1 flex items-center gap-1 text-sm text-slate-500">
+            <StarIcon className="h-3.5 w-3.5 text-amber-400" /> {gym.rating.toFixed(1)}
+          </p>
+          <GymDetailsInfo
+            className="mt-4"
+            address={gym.address}
+            closesAt={gym.closesAt}
+            hasTrainer={gym.hasTrainer}
+            trainerFee={gym.trainerFee}
+            hasParking={gym.hasParking}
+          />
+        </div>
       </div>
 
       <div className="mb-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
@@ -283,6 +298,10 @@ export default function GymDetailPage() {
           No classes on this day
         </p>
       )}
+
+      <div className="mt-8">
+        <GymReviews gymId={gym.id} />
+      </div>
 
       {bookingSlot && userId && (
         <BookingConfirmModal

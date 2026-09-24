@@ -24,6 +24,7 @@ async function pruneStaleGyms() {
 
   await prisma.booking.deleteMany({ where: { classSlotId: { in: staleSlotIds } } });
   await prisma.commission.deleteMany({ where: { gymId: { in: staleIds } } });
+  await prisma.review.deleteMany({ where: { gymId: { in: staleIds } } });
   await prisma.classSlot.deleteMany({ where: { gymId: { in: staleIds } } });
   await prisma.activity.deleteMany({ where: { gymId: { in: staleIds } } });
   await prisma.gym.deleteMany({ where: { id: { in: staleIds } } });
@@ -185,6 +186,47 @@ function sportToActivity(sport?: string): { sport: string; name: string }[] {
   return [];
 }
 
+function gymImages(index: number) {
+  return [0, 1, 2].map((offset) => GYM_IMAGES[(index * 7 + offset * 5) % GYM_IMAGES.length]);
+}
+
+function gymAmenities(index: number) {
+  const hasTrainer = index % 5 < 2;
+  return {
+    closesAt: ["21:00", "22:00", "22:00", "23:00"][index % 4],
+    hasTrainer,
+    trainerFee: hasTrainer ? 3 + (index % 3) : null,
+    hasParking: index % 2 === 0,
+  };
+}
+
+async function seedReviews(gymId: string, rating: number, index: number) {
+  const positive = [
+    "시설이 깔끔하고 기구 관리가 잘 되어 있어요.",
+    "직원분들이 친절하고 수업 분위기도 좋아요.",
+    "샤워실까지 정돈되어 있어서 편하게 이용했어요.",
+  ];
+  const mixed = [
+    "저녁 시간에는 조금 붐비지만 전반적으로 만족스러워요.",
+    "창문이 적어서 약간 답답하게 느껴질 때가 있어요.",
+    "피크 시간대에는 인기 기구를 기다려야 해요.",
+  ];
+  const comments = rating >= 4.5
+    ? [...positive, positive[index % positive.length]]
+    : [...positive.slice(0, 2), mixed[index % mixed.length], mixed[(index + 1) % mixed.length]];
+  const names = ["민지", "준호", "서연", "도윤", "지우"];
+
+  await prisma.review.createMany({
+    data: comments.map((comment, reviewIndex) => ({
+      gymId,
+      authorName: names[(index + reviewIndex) % names.length],
+      rating: rating >= 4.5 || reviewIndex < 2 ? Math.min(5, Math.max(4, Math.round(rating))) : Math.max(3, Math.floor(rating)),
+      comment,
+      createdAt: new Date(Date.now() - (reviewIndex + 1) * 86400000 * (index % 4 + 1)),
+    })),
+  });
+}
+
 async function main() {
   await pruneStaleGyms();
 
@@ -197,6 +239,7 @@ async function main() {
       const pop = Math.floor(Math.random() * 100);
       const tier = pickTier(pop);
       const allowsPeak = tier === VenueTier.NEIGHBORHOOD || pop < 40;
+      const images = gymImages(i);
 
       const area = v.address?.split(" ").find((w) => w.endsWith("동") || w.endsWith("구")) ?? null;
 
@@ -207,7 +250,9 @@ async function main() {
           lng: v.lng,
           address: v.address ?? null,
           area,
-          imageUrl: GYM_IMAGES[(i * 7) % GYM_IMAGES.length],
+          imageUrl: images[0],
+          images,
+          ...gymAmenities(i),
           tier,
           allowsPeak,
           rating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
@@ -215,6 +260,7 @@ async function main() {
         },
       });
       gyms.push(gym);
+      await seedReviews(gym.id, gym.rating, i);
 
       const osmActivities = sportToActivity(v.sport);
       const shuffled = [...SPORTS].sort(() => Math.random() - 0.5);
@@ -260,6 +306,7 @@ async function main() {
       const g = FALLBACK_GYMS[i];
       const tier = pickTier(g.pop);
       const allowsPeak = tier === VenueTier.NEIGHBORHOOD || g.pop < 40;
+      const images = gymImages(i);
 
       const gym = await prisma.gym.create({
         data: {
@@ -267,7 +314,10 @@ async function main() {
           lat: g.lat,
           lng: g.lng,
           area: g.area,
-          imageUrl: GYM_IMAGES[(i * 7) % GYM_IMAGES.length],
+          address: `인천광역시 연수구 ${g.area} ${10 + (i * 7) % 90}-${1 + i % 9}`,
+          imageUrl: images[0],
+          images,
+          ...gymAmenities(i),
           tier,
           allowsPeak,
           rating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
@@ -275,6 +325,7 @@ async function main() {
         },
       });
       gyms.push(gym);
+      await seedReviews(gym.id, gym.rating, i);
 
       const shuffled = [...SPORTS].sort(() => Math.random() - 0.5);
       const activities = shuffled.slice(0, 3 + Math.floor(Math.random() * 4));

@@ -50,7 +50,19 @@
     "fitsSchedule": "내 시간대와 맞아요",
     "dropIn": "자유 이용",
     "pickTime": "시간 선택",
-    "classes": "클래스"
+    "classes": "클래스",
+    "address": "주소",
+    "closesAt": "마감",
+    "trainer": "트레이너 이용 가능",
+    "trainerFee": "크레딧",
+    "parking": "주차 가능",
+    "previousPhoto": "이전 사진",
+    "nextPhoto": "다음 사진",
+    "closePhotoViewer": "사진 뷰어 닫기"
+  },
+  "reviews": {
+    "title": "후기",
+    "noReviews": "아직 후기가 없습니다"
   },
   "booking": {
     "confirmTitle": "예약 확인",
@@ -113,7 +125,8 @@
     "member": "멤버",
     "dashboard": "대시보드",
     "slots": "슬롯",
-    "revenue": "수익"
+    "revenue": "수익",
+    "navigation": "주요 탐색"
   },
   "landing": {
     "hero": {

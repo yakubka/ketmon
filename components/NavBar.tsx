@@ -26,6 +26,7 @@ type Messages = {
     dashboard: string;
     slots: string;
     revenue: string;
+    navigation: string;
   };
 };
 
@@ -51,7 +52,6 @@ export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
   ];
 
   const links = isOwnerSection ? ownerLinks : memberLinks;
-
   const isActive = (href: string) =>
     pathname === href || (href !== "/home" && href !== "/owner" && pathname.startsWith(href));
 
