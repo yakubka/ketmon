@@ -5,7 +5,7 @@
     "continueWithGoogle": "Continue with Google"
   },
   "home": {
-    "title": "Recommended for you",
+    "title": "Switch",
     "subtitle": "Based on your location and interests",
     "sortByDistance": "Sort by distance",
     "toggleMap": "View map",
@@ -14,8 +14,10 @@
     "availableToday": "Available today",
     "allSports": "All sports",
     "allAreas": "All areas",
-    "allTimes": "All times",
-    "noClasses": "No classes found"
+    "noClasses": "No venues found",
+    "nearby": "Nearby",
+    "popular": "Popular",
+    "recommended": "Recommended"
   },
   "map": {
     "details": "Details",

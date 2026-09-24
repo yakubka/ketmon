@@ -4,7 +4,7 @@ import { DemoPanelWrapper } from "@/components/DemoPanelWrapper";
 import { NavBarWrapper } from "@/components/NavBarWrapper";
 
 export const metadata: Metadata = {
-  title: "Ketmon",
+  title: "Switch",
   description: "No-contract fitness credit marketplace",
 };
 
