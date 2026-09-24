@@ -1,0 +1,49 @@
+{
+  "welcome": {
+    "headline": "Phones already went no-contract. Fitness is still stuck on 12 months.",
+    "subline": "Credits, not contracts",
+    "continueWithGoogle": "Continue with Google"
+  },
+  "home": {
+    "title": "Recommended for you",
+    "subtitle": "Based on your location and interests",
+    "sortByDistance": "Sort by distance",
+    "toggleMap": "View map",
+    "toggleList": "View list",
+    "creditsFrom": "credits from",
+    "availableToday": "Available today"
+  },
+  "timeBand": {
+    "OFF_PEAK": "Off-peak",
+    "STANDARD": "Standard",
+    "PEAK": "Peak"
+  },
+  "detail": {
+    "bookButton": "Book",
+    "cancelPolicy": "Free cancellation up to 6 hours before class"
+  },
+  "booking": {
+    "confirmTitle": "Booking confirmed",
+    "creditsDeducted": "Credits deducted",
+    "balanceAfter": "Balance after",
+    "cancelWindowNotice": "Free cancellation up to 6 hours before"
+  },
+  "myBookings": {
+    "title": "My bookings",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "cancel": "Cancel",
+    "freeCancel": "Free cancellation (full refund)",
+    "lateCancel": "Late cancellation (no refund)"
+  },
+  "wallet": {
+    "title": "Wallet",
+    "balance": "Balance",
+    "buyCredits": "Buy credits",
+    "history": "Transaction history"
+  },
+  "profile": {
+    "title": "Profile",
+    "language": "Language"
+  }
+}

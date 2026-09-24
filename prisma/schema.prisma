@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role { MEMBER OWNER }
+enum VenueTier { NEIGHBORHOOD MID PREMIUM }
+enum TimeBand { OFF_PEAK STANDARD PEAK }
+enum BookingStatus { BOOKED ATTENDED LATE_CANCELLED NO_SHOW CANCELLED }
+enum TxnType { PURCHASE SPEND REFUND }
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  locale        String   @default("ko")
+  role          Role     @default(MEMBER)
+  creditBalance Int      @default(30)
+  gyms          Gym[]
+  bookings      Booking[]
+  transactions  CreditTransaction[]
+  createdAt     DateTime @default(now())
+}
+
+model Gym {
+  id         String      @id @default(cuid())
+  name       String
+  lat        Float
+  lng        Float
+  address    String?
+  tier       VenueTier
+  allowsPeak Boolean     @default(false)
+  rating     Float       @default(4.5)
+  popularity Int         @default(50)
+  ownerId    String?
+  owner      User?       @relation(fields: [ownerId], references: [id])
+  activities Activity[]
+  slots      ClassSlot[]
+}
+
+model Activity {
+  id          String      @id @default(cuid())
+  gymId       String
+  gym         Gym         @relation(fields: [gymId], references: [id])
+  name        String
+  sport       String
+  durationMin Int         @default(50)
+  slots       ClassSlot[]
+}
+
+model ClassSlot {
+  id         String    @id @default(cuid())
+  gymId      String
+  gym        Gym       @relation(fields: [gymId], references: [id])
+  activityId String
+  activity   Activity  @relation(fields: [activityId], references: [id])
+  startTime  DateTime
+  timeBand   TimeBand
+  capacity   Int       @default(8)
+  booked     Int       @default(0)
+  creditCost Int
+  bookings   Booking[]
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  classSlotId String
+  classSlot   ClassSlot     @relation(fields: [classSlotId], references: [id])
+  status      BookingStatus @default(BOOKED)
+  creditsPaid Int
+  createdAt   DateTime      @default(now())
+}
+
+model CreditTransaction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Int
+  type      TxnType
+  bookingId String?
+  createdAt DateTime @default(now())
+}
+
+model Commission {
+  id        String   @id @default(cuid())
+  gymId     String
+  userId    String
+  amount    Int
+  createdAt DateTime @default(now())
+}
