@@ -218,7 +218,7 @@ export default function HomePage() {
   if (!t) return null;
 
   return (
-    <div className="mx-auto max-w-3xl pb-20">
+    <div className="mx-auto max-w-3xl pb-20 lg:max-w-5xl xl:max-w-7xl">
       <div className="px-4 pt-6">
         <div className="flex items-center justify-between">
           <div>
@@ -257,10 +257,10 @@ export default function HomePage() {
       </div>
 
       <div className="mt-3 px-4">
-        <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSportFilter("")}
-            className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all ${
+            className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all ${
               !sportFilter ? "bg-teal-500 text-white shadow-md shadow-teal-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
@@ -270,7 +270,7 @@ export default function HomePage() {
             <button
               key={sport}
               onClick={() => setSportFilter(sportFilter === sport ? "" : sport)}
-              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all ${
                 sportFilter === sport ? "bg-teal-500 text-white shadow-md shadow-teal-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
@@ -283,7 +283,7 @@ export default function HomePage() {
 
       <div className="mt-4 px-4">
         {loading && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="h-60 animate-pulse rounded-2xl bg-slate-100" />
             ))}
@@ -298,7 +298,7 @@ export default function HomePage() {
         )}
 
         {!loading && filtered.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((gym) => {
               const nextTime = gym.nextSlot
                 ? new Date(gym.nextSlot.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })

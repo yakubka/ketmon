@@ -111,9 +111,9 @@ export function WheelPicker({ options, value, onChange, label }: WheelPickerProp
                 <div style={{ height: PAD }} />
                 {options.map((opt, i) => {
                   const dist = Math.abs(i - idx);
-                  const opacity = dist === 0 ? 1 : dist === 1 ? 0.55 : 0.25;
-                  const scale = dist === 0 ? 1 : dist === 1 ? 0.93 : 0.85;
-                  const rotateX = dist === 0 ? 0 : dist === 1 ? (i < idx ? 25 : -25) : (i < idx ? 45 : -45);
+                  const opacity = dist === 0 ? 1 : dist === 1 ? 0.8 : 0.55;
+                  const scale = dist === 0 ? 1 : dist === 1 ? 0.95 : 0.88;
+                  const rotateX = dist === 0 ? 0 : dist === 1 ? (i < idx ? 18 : -18) : (i < idx ? 32 : -32);
 
                   return (
                     <div
@@ -131,7 +131,7 @@ export function WheelPicker({ options, value, onChange, label }: WheelPickerProp
                       }}
                     >
                       <span
-                        className={`text-base transition-colors ${dist === 0 ? "font-semibold text-slate-900" : "text-slate-500"}`}
+                        className={`text-base transition-colors ${dist === 0 ? "font-semibold text-slate-900" : "text-slate-600"}`}
                       >
                         {opt.label}
                       </span>
