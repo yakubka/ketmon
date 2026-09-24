@@ -29,6 +29,7 @@ type Messages = {
     booking: string;
     booked: string;
     enjoy: string;
+    calendarAdded: string;
     failed: string;
   };
 };
@@ -74,6 +75,7 @@ export function BookingConfirmModal({
           <div className="text-center">
             <p className="text-lg font-bold text-brand-600">{t.booking.booked}</p>
             <p className="mt-2 text-sm text-slate-500">{t.booking.enjoy}</p>
+            <p className="mt-3 text-xs text-slate-400">{t.booking.calendarAdded}</p>
           </div>
         ) : (
           <>
