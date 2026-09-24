@@ -17,7 +17,11 @@
     "noClasses": "No classes found"
   },
   "map": {
-    "details": "Details"
+    "details": "Details",
+    "route": "Route",
+    "hideRoute": "Hide route",
+    "you": "You",
+    "walkInfo": "{distance} km, ~{duration} min walk"
   },
   "timeBand": {
     "OFF_PEAK": "Off-peak",
@@ -40,6 +44,7 @@
     "booking": "Booking...",
     "booked": "Booked",
     "enjoy": "Enjoy your class",
+    "calendarAdded": "Added to Google Calendar",
     "failed": "Booking failed. Please try again."
   },
   "myBookings": {

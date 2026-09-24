@@ -17,7 +17,11 @@
     "noClasses": "수업이 없습니다"
   },
   "map": {
-    "details": "상세보기"
+    "details": "상세보기",
+    "route": "길찾기",
+    "hideRoute": "경로 숨기기",
+    "you": "내 위치",
+    "walkInfo": "{distance} km, 도보 약 {duration}분"
   },
   "timeBand": {
     "OFF_PEAK": "한가한 시간",
@@ -40,6 +44,7 @@
     "booking": "예약 중...",
     "booked": "예약 완료",
     "enjoy": "수업을 즐기세요",
+    "calendarAdded": "Google 캘린더에 추가됨",
     "failed": "예약에 실패했습니다. 다시 시도해주세요."
   },
   "myBookings": {
