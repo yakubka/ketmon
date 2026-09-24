@@ -60,9 +60,9 @@ const CITIES_EN = [
 ];
 
 const PLANS = [
-  { credits: 20, price: 29900, key: "starter", perCredit: 1495 },
-  { credits: 40, price: 49900, key: "standard", perCredit: 1248, popular: true },
-  { credits: 80, price: 79900, key: "premium", perCredit: 999 },
+  { credits: 20, price: 29900, key: "starter", perCredit: 1495, days: 30, gradient: "from-emerald-400 to-teal-500" },
+  { credits: 40, price: 49900, key: "standard", perCredit: 1248, days: 30, popular: true, gradient: "from-teal-400 to-cyan-500" },
+  { credits: 80, price: 79900, key: "premium", perCredit: 999, days: 30, gradient: "from-cyan-400 to-blue-500" },
 ];
 
 export default function LandingPage() {
@@ -90,7 +90,7 @@ export default function LandingPage() {
       <nav className="sticky top-0 z-40 border-b border-slate-100 bg-white/90 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
           <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Switch" className="h-8 w-8 rounded-lg" />
+            <img src="/switch-logo.png" alt="Switch" className="h-8 w-8 rounded-lg" />
             <span className="text-lg font-bold tracking-tight text-slate-900">Switch</span>
           </div>
           <div className="flex items-center gap-3">
@@ -113,38 +113,66 @@ export default function LandingPage() {
         <div className="relative mx-auto max-w-5xl px-4">
           <div className="flex flex-col items-center text-center sm:flex-row sm:text-left">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold leading-tight text-white sm:text-5xl">
+              <h1 className="animate-fade-in text-3xl font-bold leading-tight text-white sm:text-5xl">
                 {t.landing.hero.title}
               </h1>
-              <p className="mt-4 max-w-md text-base text-white/80">
+              <p className="mt-4 max-w-md animate-fade-in-delay text-base text-white/80">
                 {t.landing.hero.subtitle}
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-3 sm:justify-start">
                 <button
                   onClick={handleLogin}
-                  className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-teal-600 shadow-lg transition-transform hover:scale-105"
+                  className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-teal-600 shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
                 >
                   {t.landing.hero.cta}
                 </button>
               </div>
             </div>
             <div className="mt-10 flex-shrink-0 sm:mt-0">
-              <div className="relative mx-auto h-[340px] w-[170px] overflow-hidden rounded-[28px] border-4 border-white/30 bg-slate-900 shadow-2xl">
-                <div className="flex h-full flex-col items-center justify-center p-4 text-center">
-                  <img src="/logo.svg" alt="" className="mb-3 h-12 w-12 rounded-xl" />
-                  <p className="text-lg font-bold text-white">Switch</p>
-                  <p className="mt-1 text-[10px] text-slate-400">
-                    {t.welcome.subline}
-                  </p>
-                  <div className="mt-4 w-full space-y-2">
-                    <div className="h-16 rounded-lg bg-teal-500/20" />
-                    <div className="h-12 rounded-lg bg-teal-500/10" />
-                    <div className="h-12 rounded-lg bg-teal-500/10" />
-                  </div>
-                  <div className="mt-auto flex w-full justify-around border-t border-slate-700 pt-2">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="h-4 w-4 rounded-full bg-slate-700" />
-                    ))}
+              <div className="relative mx-auto h-[380px] w-[190px] animate-float">
+                <div className="absolute inset-0 rounded-[36px] border-[6px] border-slate-800 bg-slate-900 shadow-2xl">
+                  <div className="absolute left-1/2 top-2 h-5 w-20 -translate-x-1/2 rounded-full bg-slate-800" />
+                  <div className="absolute inset-[6px] top-3 overflow-hidden rounded-[28px] bg-gradient-to-b from-teal-500 to-emerald-500">
+                    <div className="flex flex-col items-center px-3 pt-10">
+                      <img src="/switch-logo.png" alt="" className="h-10 w-10 rounded-xl shadow-lg" />
+                      <p className="mt-2 text-sm font-bold text-white">Switch</p>
+                      <p className="mt-0.5 text-[8px] text-white/70">{t.welcome.subline}</p>
+                      <div className="mt-4 w-full space-y-2">
+                        <div className="flex items-center gap-2 rounded-xl bg-white/20 p-2.5 backdrop-blur-sm">
+                          <div className="h-8 w-8 rounded-lg bg-white/30" />
+                          <div className="flex-1">
+                            <div className="h-2 w-16 rounded bg-white/40" />
+                            <div className="mt-1 h-1.5 w-10 rounded bg-white/25" />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 rounded-xl bg-white/15 p-2.5">
+                          <div className="h-8 w-8 rounded-lg bg-white/20" />
+                          <div className="flex-1">
+                            <div className="h-2 w-20 rounded bg-white/30" />
+                            <div className="mt-1 h-1.5 w-12 rounded bg-white/20" />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 rounded-xl bg-white/10 p-2.5">
+                          <div className="h-8 w-8 rounded-lg bg-white/15" />
+                          <div className="flex-1">
+                            <div className="h-2 w-14 rounded bg-white/25" />
+                            <div className="mt-1 h-1.5 w-8 rounded bg-white/15" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-0 flex w-full justify-around border-t border-white/10 bg-black/10 px-4 py-2 backdrop-blur-sm">
+                      {[
+                        "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
+                        "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
+                        "M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z",
+                        "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",
+                      ].map((d, i) => (
+                        <svg key={i} className="h-4 w-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d={d} />
+                        </svg>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -157,7 +185,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl px-4">
           <div className="grid gap-6 sm:grid-cols-3">
             {(["variety", "credits", "convenience"] as const).map((key) => (
-              <div key={key} className="rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-50 p-6 text-center">
+              <div key={key} className="rounded-2xl bg-gradient-to-br from-teal-50 to-emerald-50 p-6 text-center transition-transform hover:-translate-y-1 hover:shadow-lg">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal-100">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="2" strokeLinecap="round">
                     {key === "variety" && <><circle cx="12" cy="12" r="10" /><path d="M8 12h8M12 8v8" /></>}
@@ -181,7 +209,7 @@ export default function LandingPage() {
             {SPORTS.map((sport) => (
               <div
                 key={sport.en}
-                className="flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                className="flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
                 <span className="text-2xl">{sport.icon}</span>
                 <span className="text-sm font-medium text-slate-700">
@@ -199,7 +227,7 @@ export default function LandingPage() {
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
             {(["step1", "step2", "step3"] as const).map((key, i) => (
               <div key={key} className="text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-teal-500 text-xl font-bold text-white">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-teal-500 text-xl font-bold text-white shadow-lg shadow-teal-200">
                   {i + 1}
                 </div>
                 <h3 className="mt-4 text-base font-bold text-slate-900">{t.landing.howItWorks[key].title}</h3>
@@ -213,39 +241,43 @@ export default function LandingPage() {
       <section className="bg-slate-50 py-16">
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="text-center text-2xl font-bold text-slate-900">{t.landing.plans.title}</h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-8 flex gap-4 overflow-x-auto pb-4 sm:grid sm:grid-cols-3 sm:overflow-visible" style={{ scrollbarWidth: "none" }}>
             {PLANS.map((plan) => (
               <div
                 key={plan.key}
-                className={`relative rounded-2xl bg-white p-6 shadow-sm ${plan.popular ? "ring-2 ring-teal-500 shadow-lg" : ""}`}
+                className={`relative min-w-[260px] flex-shrink-0 overflow-hidden rounded-2xl shadow-lg transition-transform hover:-translate-y-1 hover:shadow-xl sm:min-w-0 ${plan.popular ? "ring-2 ring-teal-400" : ""}`}
               >
                 {plan.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-teal-500 px-3 py-1 text-xs font-semibold text-white">
+                  <span className="absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-teal-600 shadow-sm backdrop-blur-sm">
                     {t.landing.plans.popular}
                   </span>
                 )}
-                <h3 className="text-lg font-bold text-slate-900">
-                  {t.landing.plans[plan.key as keyof typeof t.landing.plans]}
-                </h3>
-                <p className="mt-1 text-sm text-slate-500">
-                  {plan.credits} {t.landing.plans.credits}
-                </p>
-                <p className="mt-4 text-2xl font-bold text-slate-900">
-                  &#8361;{plan.price.toLocaleString()}
-                </p>
-                <p className="text-xs text-slate-400">
-                  ~&#8361;{plan.perCredit.toLocaleString()} / {t.landing.plans.perCredit}
-                </p>
-                <button
-                  onClick={handleLogin}
-                  className={`mt-6 w-full rounded-full py-2.5 text-sm font-semibold transition-colors ${
-                    plan.popular
-                      ? "bg-teal-500 text-white hover:bg-teal-600"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
-                >
-                  {t.landing.plans.getStarted}
-                </button>
+                <div className={`bg-gradient-to-br ${plan.gradient} p-6 pb-8`}>
+                  <h3 className="text-xl font-bold text-white">
+                    {t.landing.plans[plan.key as keyof typeof t.landing.plans]}
+                  </h3>
+                  <p className="mt-1 text-sm text-white/80">
+                    {plan.credits} {t.landing.plans.credits} / {plan.days}d
+                  </p>
+                </div>
+                <div className="bg-white p-6">
+                  <p className="text-2xl font-bold text-slate-900">
+                    &#8361;{plan.price.toLocaleString()}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-400">
+                    ~&#8361;{plan.perCredit.toLocaleString()} / {t.landing.plans.perCredit}
+                  </p>
+                  <button
+                    onClick={handleLogin}
+                    className={`mt-4 w-full rounded-full py-2.5 text-sm font-semibold transition-all active:scale-95 ${
+                      plan.popular
+                        ? "bg-teal-500 text-white hover:bg-teal-600"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                    }`}
+                  >
+                    {t.landing.plans.getStarted}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -259,7 +291,7 @@ export default function LandingPage() {
             {cities.map((city) => (
               <span
                 key={city}
-                className="rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-600 transition-colors hover:border-teal-300 hover:text-teal-600"
+                className="rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-600 transition-colors hover:border-teal-300 hover:bg-teal-50 hover:text-teal-600"
               >
                 {city}
               </span>
@@ -272,7 +304,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl px-4">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
             <div className="flex items-center gap-2">
-              <img src="/logo.svg" alt="Switch" className="h-6 w-6 rounded-md" />
+              <img src="/switch-logo.png" alt="Switch" className="h-6 w-6 rounded-md" />
               <span className="text-sm font-bold text-slate-900">Switch</span>
             </div>
             <div className="flex gap-6 text-sm text-slate-500">

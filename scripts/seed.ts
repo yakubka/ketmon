@@ -3,7 +3,7 @@ import { resolveTimeBand, creditPrice } from "../lib/pricing";
 
 const prisma = new PrismaClient();
 
-const BBOX = "37.490,127.010,37.530,127.060";
+const BBOX = "37.400,126.665,37.425,126.695";
 
 const SPORTS = [
   { sport: "pilates", name: "필라테스 (Pilates)" },
@@ -25,33 +25,33 @@ const GYM_IMAGES = [
   "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1593079831268-3381b0db4a77?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1570829460005-c840387bb1ca?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1579758629938-03607ccdbaba?w=400&h=300&fit=crop",
 ];
 
 const FALLBACK_GYMS = [
-  { name: "강남 피트니스", lat: 37.4979, lng: 127.0276, pop: 85, area: "강남" },
-  { name: "역삼 요가룸", lat: 37.5007, lng: 127.0365, pop: 72, area: "역삼" },
-  { name: "선릉 복싱짐", lat: 37.5045, lng: 127.0490, pop: 65, area: "선릉" },
-  { name: "삼성 필라테스", lat: 37.5088, lng: 127.0630, pop: 78, area: "삼성" },
-  { name: "논현 크로스핏", lat: 37.5100, lng: 127.0250, pop: 42, area: "논현" },
-  { name: "청담 스튜디오", lat: 37.5200, lng: 127.0470, pop: 90, area: "청담" },
-  { name: "신논현 헬스클럽", lat: 37.5040, lng: 127.0240, pop: 55, area: "신논현" },
-  { name: "대치 짐", lat: 37.4940, lng: 127.0580, pop: 30, area: "대치" },
-  { name: "도곡 요가", lat: 37.4880, lng: 127.0440, pop: 25, area: "도곡" },
-  { name: "압구정 필라테스", lat: 37.5250, lng: 127.0280, pop: 88, area: "압구정" },
-  { name: "학동 복싱", lat: 37.5140, lng: 127.0310, pop: 35, area: "학동" },
-  { name: "양재 헬스", lat: 37.4840, lng: 127.0350, pop: 48, area: "양재" },
-  { name: "개포 크로스핏", lat: 37.4790, lng: 127.0480, pop: 20, area: "개포" },
-  { name: "일원 스튜디오", lat: 37.4830, lng: 127.0820, pop: 28, area: "일원" },
-  { name: "수서 짐", lat: 37.4870, lng: 127.1000, pop: 22, area: "수서" },
-  { name: "잠실 필라테스", lat: 37.5130, lng: 127.1000, pop: 75, area: "잠실" },
-  { name: "선정릉 요가", lat: 37.5100, lng: 127.0430, pop: 60, area: "선정릉" },
-  { name: "강남역 헬스", lat: 37.4970, lng: 127.0280, pop: 92, area: "강남" },
-  { name: "교대 복싱짐", lat: 37.4930, lng: 127.0140, pop: 50, area: "교대" },
-  { name: "매봉 크로스핏", lat: 37.4870, lng: 127.0330, pop: 18, area: "매봉" },
-  { name: "한티 스튜디오", lat: 37.5010, lng: 127.0530, pop: 32, area: "한티" },
-  { name: "뱅뱅 피트니스", lat: 37.5020, lng: 127.0260, pop: 70, area: "강남" },
-  { name: "도산 요가룸", lat: 37.5220, lng: 127.0380, pop: 82, area: "압구정" },
-  { name: "세곡 헬스장", lat: 37.4700, lng: 127.0600, pop: 15, area: "세곡" },
+  { name: "연수 피트니스", lat: 37.4106, lng: 126.6784, pop: 85, area: "연수동" },
+  { name: "청학 헬스클럽", lat: 37.4080, lng: 126.6720, pop: 72, area: "청학동" },
+  { name: "옥련 요가원", lat: 37.4130, lng: 126.6650, pop: 65, area: "옥련동" },
+  { name: "동춘 복싱짐", lat: 37.4020, lng: 126.6810, pop: 78, area: "동춘동" },
+  { name: "선학 필라테스", lat: 37.4050, lng: 126.6900, pop: 42, area: "선학동" },
+  { name: "연수역 크로스핏", lat: 37.4120, lng: 126.6750, pop: 90, area: "연수동" },
+  { name: "송도 스포츠센터", lat: 37.3830, lng: 126.6600, pop: 92, area: "송도동" },
+  { name: "송도 수영장", lat: 37.3810, lng: 126.6560, pop: 80, area: "송도동" },
+  { name: "연수구 복합체육관", lat: 37.4100, lng: 126.6800, pop: 75, area: "연수동" },
+  { name: "문학 댄스스튜디오", lat: 37.4200, lng: 126.6850, pop: 55, area: "문학동" },
+  { name: "학익 헬스", lat: 37.4350, lng: 126.6700, pop: 48, area: "학익동" },
+  { name: "옥련 크로스핏박스", lat: 37.4140, lng: 126.6630, pop: 30, area: "옥련동" },
+  { name: "동춘 요가스튜디오", lat: 37.4000, lng: 126.6830, pop: 25, area: "동춘동" },
+  { name: "연수 무술도장", lat: 37.4115, lng: 126.6770, pop: 35, area: "연수동" },
+  { name: "청학 필라테스", lat: 37.4060, lng: 126.6710, pop: 60, area: "청학동" },
+  { name: "송도 테니스코트", lat: 37.3850, lng: 126.6640, pop: 70, area: "송도동" },
 ];
 
 async function fetchOverpass(): Promise<Array<{ name: string; lat: number; lng: number; address?: string; sport?: string }>> {

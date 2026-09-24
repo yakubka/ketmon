@@ -8,7 +8,7 @@ import { useMessages } from "@/lib/useMessages";
 import { WheelPicker } from "@/components/WheelPicker";
 import Link from "next/link";
 
-const GANGNAM = { lat: 37.4979, lng: 127.0276 };
+const INCHEON_YEONSU = { lat: 37.4106, lng: 126.6784 };
 
 type GymSummary = {
   id: string;
@@ -39,16 +39,23 @@ type Messages = {
   };
 };
 
-const SPORT_ICONS: Record<string, string> = {
-  Gym: "M3 6h18M3 18h18M6 6v12M18 6v12M9 6v12M15 6v12",
-  Yoga: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z",
-  Tennis: "M12 2a10 10 0 100 20 10 10 0 000-20zM2.05 12.5A10 10 0 0012 22",
-  Swimming: "M2 18c1.5-1.5 3-2 5-2s3.5.5 5 2c1.5-1.5 3-2 5-2s3.5.5 5 2",
-  Boxing: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5",
-  Pilates: "M12 2v20M2 12h20",
-  CrossFit: "M12 2L2 12l10 10 10-10L12 2z",
-  Dance: "M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12",
+const SPORT_LABELS: Record<string, { en: string; ko: string; icon: string }> = {
+  gym: { en: "Gym", ko: "헬스", icon: "M3 6h18M3 18h18M6 6v12M18 6v12" },
+  yoga: { en: "Yoga", ko: "요가", icon: "M12 2a10 10 0 100 20 10 10 0 000-20z" },
+  pilates: { en: "Pilates", ko: "필라테스", icon: "M12 2v20M2 12h20" },
+  boxing: { en: "Boxing", ko: "복싱", icon: "M12 2L2 7l10 5 10-5-10-5z" },
+  swimming: { en: "Swimming", ko: "수영", icon: "M2 18c1.5-1.5 3-2 5-2s3.5.5 5 2c1.5-1.5 3-2 5-2" },
+  dance: { en: "Dance", ko: "댄스", icon: "M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10" },
+  crossfit: { en: "CrossFit", ko: "크로스핏", icon: "M12 2L2 12l10 10 10-10L12 2z" },
+  martial_arts: { en: "Martial Arts", ko: "무술", icon: "M14.5 2l5 5-7 7-5-5 7-7z" },
+  tennis: { en: "Tennis", ko: "테니스", icon: "M12 2a10 10 0 100 20 10 10 0 000-20z" },
 };
+
+function formatSport(sport: string, locale: string): string {
+  const entry = SPORT_LABELS[sport];
+  if (entry) return locale === "ko" ? entry.ko : entry.en;
+  return sport.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 const DISTANCE_OPTIONS = [
   { value: "0", label: "All" },
@@ -67,12 +74,14 @@ function recommendScore(gym: GymScored, maxDist: number): number {
 
 export default function HomePage() {
   const [gyms, setGyms] = useState<GymSummary[]>([]);
-  const [userPos, setUserPos] = useState(GANGNAM);
+  const [userPos, setUserPos] = useState(INCHEON_YEONSU);
   const [sportFilter, setSportFilter] = useState("");
   const [areaFilter, setAreaFilter] = useState("");
   const [distanceFilter, setDistanceFilter] = useState("0");
   const [loading, setLoading] = useState(true);
   const t = useMessages<Messages>();
+
+  const locale = typeof window !== "undefined" ? localStorage.getItem("ketmon-locale") || "ko" : "ko";
 
   useEffect(() => {
     navigator.geolocation?.getCurrentPosition(
@@ -132,7 +141,7 @@ export default function HomePage() {
   if (!t) return null;
 
   return (
-    <div className="mx-auto max-w-lg pb-20">
+    <div className="mx-auto max-w-3xl pb-20">
       <div className="px-4 pt-6">
         <div className="flex items-center justify-between">
           <div>
@@ -155,8 +164,8 @@ export default function HomePage() {
         <div className="flex gap-2 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
           <button
             onClick={() => setSportFilter("")}
-            className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-colors ${
-              !sportFilter ? "bg-teal-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all ${
+              !sportFilter ? "bg-teal-500 text-white shadow-md shadow-teal-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             {t.home.allSports}
@@ -165,11 +174,11 @@ export default function HomePage() {
             <button
               key={sport}
               onClick={() => setSportFilter(sportFilter === sport ? "" : sport)}
-              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-colors ${
-                sportFilter === sport ? "bg-teal-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-all ${
+                sportFilter === sport ? "bg-teal-500 text-white shadow-md shadow-teal-200" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              {sport}
+              {formatSport(sport, locale)}
             </button>
           ))}
         </div>
@@ -192,9 +201,9 @@ export default function HomePage() {
 
       <div className="mt-5 px-4">
         {loading && (
-          <div className="space-y-3">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-24 animate-pulse rounded-2xl bg-slate-100" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-52 animate-pulse rounded-2xl bg-slate-100" />
             ))}
           </div>
         )}
@@ -210,51 +219,46 @@ export default function HomePage() {
         )}
 
         {!loading && filtered.length > 0 && (
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {filtered.map((gym) => (
               <Link key={gym.id} href={`/gym/${gym.id}`}>
-                <Card className="flex gap-3.5 p-0 overflow-hidden transition-shadow hover:shadow-md active:scale-[0.99]">
-                  {gym.imageUrl ? (
-                    <img
-                      src={gym.imageUrl}
-                      alt={gym.name}
-                      className="h-28 w-28 flex-shrink-0 object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center bg-teal-50">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="1.5">
-                        <path d="M3 6h18M3 18h18M6 6v12M18 6v12" />
-                      </svg>
+                <Card className="group h-full overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]">
+                  <div className="relative aspect-[4/3]">
+                    {gym.imageUrl ? (
+                      <img
+                        src={gym.imageUrl}
+                        alt={gym.name}
+                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-teal-50 to-emerald-50">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="1.5">
+                          <path d="M3 6h18M3 18h18M6 6v12M18 6v12" />
+                        </svg>
+                      </div>
+                    )}
+                    <div className="absolute bottom-1.5 left-1.5 flex items-center gap-0.5 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
+                      <StarIcon className="h-2.5 w-2.5 text-amber-400" />
+                      {gym.rating.toFixed(1)}
                     </div>
-                  )}
-                  <div className="flex flex-1 flex-col justify-center overflow-hidden py-3 pr-3">
-                    <p className="truncate text-sm font-semibold text-slate-900">{gym.name}</p>
-                    <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
-                      <span className="flex items-center gap-0.5">
-                        <StarIcon className="h-3 w-3 text-amber-400" />
-                        {gym.rating.toFixed(1)}
-                      </span>
-                      {gym.area && (
-                        <>
-                          <span className="text-slate-300">|</span>
-                          <span>{gym.area}</span>
-                        </>
-                      )}
-                      <span className="text-slate-300">|</span>
-                      <span>{gym.distance.toFixed(1)} km</span>
-                    </div>
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {gym.sports.slice(0, 3).map((s) => (
+                  </div>
+                  <div className="p-2.5">
+                    <p className="truncate text-xs font-semibold text-slate-900">{gym.name}</p>
+                    <p className="mt-0.5 truncate text-[10px] text-slate-500">
+                      {gym.area && `${gym.area} · `}{gym.distance.toFixed(1)} km
+                    </p>
+                    <div className="mt-1.5 flex flex-wrap gap-0.5">
+                      {gym.sports.slice(0, 2).map((s) => (
                         <span
                           key={s}
-                          className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] font-medium text-teal-700"
+                          className="rounded-full bg-teal-50 px-1.5 py-0.5 text-[9px] font-medium text-teal-700"
                         >
-                          {s}
+                          {formatSport(s, locale)}
                         </span>
                       ))}
-                      {gym.sports.length > 3 && (
-                        <span className="rounded-full bg-slate-50 px-2 py-0.5 text-[10px] text-slate-400">
-                          +{gym.sports.length - 3}
+                      {gym.sports.length > 2 && (
+                        <span className="rounded-full bg-slate-50 px-1.5 py-0.5 text-[9px] text-slate-400">
+                          +{gym.sports.length - 2}
                         </span>
                       )}
                     </div>

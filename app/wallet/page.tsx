@@ -47,9 +47,9 @@ type Messages = {
 };
 
 const PLANS = [
-  { credits: 20, price: 29900, label: "Starter", perCredit: 1495 },
-  { credits: 40, price: 49900, label: "Standard", perCredit: 1248, popular: true },
-  { credits: 80, price: 79900, label: "Premium", perCredit: 999 },
+  { credits: 20, price: 29900, label: "Starter", perCredit: 1495, days: 30, gradient: "from-emerald-400 to-teal-500" },
+  { credits: 40, price: 49900, label: "Standard", perCredit: 1248, days: 30, popular: true, gradient: "from-teal-400 to-cyan-500" },
+  { credits: 80, price: 79900, label: "Premium", perCredit: 999, days: 30, gradient: "from-cyan-400 to-blue-500" },
 ];
 
 const SPORT_COLORS = [
@@ -293,36 +293,37 @@ export default function WalletPage() {
 
       <section className="mt-6">
         <h2 className="text-sm font-semibold text-slate-500">{t.wallet.buyCredits}</h2>
-        <div className="mt-3 space-y-3">
+        <div className="mt-3 flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
           {PLANS.map((plan) => (
-            <Card
+            <div
               key={plan.credits}
-              className={`relative flex items-center justify-between p-4 ${plan.popular ? "ring-2 ring-teal-500" : ""}`}
+              className={`relative min-w-[200px] flex-shrink-0 overflow-hidden rounded-2xl shadow-lg transition-transform active:scale-[0.97] ${plan.popular ? "ring-2 ring-teal-400" : ""}`}
             >
               {plan.popular && (
-                <span className="absolute -top-2.5 left-4 rounded-full bg-teal-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                <span className="absolute right-2 top-2 z-10 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-teal-600 shadow-sm backdrop-blur-sm">
                   POPULAR
                 </span>
               )}
-              <div>
-                <p className="text-sm font-semibold text-slate-900">{plan.label}</p>
-                <p className="text-xs text-slate-500">{plan.credits} {t.wallet.credits}</p>
-                <p className="mt-0.5 text-[10px] text-slate-400">
+              <div className={`bg-gradient-to-br ${plan.gradient} p-4 pb-5`}>
+                <p className="text-lg font-bold text-white">{plan.label}</p>
+                <p className="text-xs text-white/80">{plan.credits} {t.wallet.credits}</p>
+                <p className="mt-1 text-[10px] text-white/60">{plan.days}d</p>
+              </div>
+              <div className="bg-white p-3">
+                <p className="text-base font-bold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
+                <p className="text-[10px] text-slate-400">
                   ~&#8361;{plan.perCredit.toLocaleString()} / {t.wallet.credits}
                 </p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
                 <Button
                   variant="primary"
-                  className="mt-1.5 text-xs"
+                  className="mt-2 w-full text-xs"
                   onClick={() => handleTopUp(plan.credits)}
                   disabled={topUpLoading === plan.credits}
                 >
                   {topUpLoading === plan.credits ? "..." : t.wallet.topUp}
                 </Button>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       </section>
