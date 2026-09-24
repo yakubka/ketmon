@@ -6,7 +6,7 @@ import { StarIcon } from "@/components/icons/StarIcon";
 import { SportIcon } from "@/components/icons/SportIcons";
 import { SearchIcon, SlidersIcon, LocationPinIcon, BoltIcon } from "@/components/icons/UIIcons";
 import { FilterSheet } from "@/components/FilterSheet";
-import { GymImage } from "@/components/GymImage";
+import { CyclingGymImage } from "@/components/CyclingGymImage";
 import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { distanceKm } from "@/lib/distance";
 import { bandForHour } from "@/lib/time-band";
@@ -34,6 +34,7 @@ type GymSummary = {
   tier: string;
   area: string | null;
   imageUrl: string | null;
+  images: string[];
   sports: string[];
   nextSlot: NextSlot | null;
 };
@@ -338,11 +339,12 @@ export default function HomePage() {
                 <Link key={gym.id} href={`/gym/${gym.id}`}>
                   <Card className="group flex h-full flex-col overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]">
                     <div className="relative aspect-[4/3]">
-                      <GymImage
-                        src={gym.imageUrl}
+                      <CyclingGymImage
+                        images={gym.images}
+                        fallbackSrc={gym.imageUrl}
                         alt={gym.name}
                         sport={gym.sports[0] ?? "gym"}
-                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                        className="h-full w-full object-cover"
                       />
                       {matchesInterests && (
                         <div className="absolute left-1.5 top-1.5 rounded-full bg-teal-500 px-1.5 py-0.5 text-[9px] font-semibold text-white shadow-sm">

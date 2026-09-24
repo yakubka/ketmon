@@ -18,6 +18,7 @@ export async function GET() {
       tier: true,
       area: true,
       imageUrl: true,
+      images: true,
       activities: {
         select: {
           sport: true,
@@ -65,6 +66,7 @@ export async function GET() {
       tier: g.tier,
       area: g.area,
       imageUrl: g.imageUrl,
+      images: g.images,
       sports: [...new Set(g.activities.map((a) => a.sport))],
       nextSlot,
     };
