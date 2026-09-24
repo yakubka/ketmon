@@ -4,6 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
 import { useMessages } from "@/lib/useMessages";
+import {
+  HomeIcon,
+  CalendarIcon,
+  WalletIcon,
+  UserIcon,
+  ChartIcon,
+  ClipboardIcon,
+  CurrencyIcon,
+  SwitchIcon,
+} from "@/components/icons/NavIcons";
+import type { ReactNode } from "react";
 
 type Messages = {
   nav: {
@@ -26,18 +37,18 @@ export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
 
   if (!t) return null;
 
-  const memberLinks = [
-    { href: "/home", label: t.nav.home },
-    { href: "/bookings", label: t.nav.bookings },
-    { href: "/wallet", label: t.nav.wallet },
-    { href: "/profile", label: t.nav.profile },
+  const memberLinks: { href: string; label: string; icon: ReactNode }[] = [
+    { href: "/home", label: t.nav.home, icon: <HomeIcon /> },
+    { href: "/bookings", label: t.nav.bookings, icon: <CalendarIcon /> },
+    { href: "/wallet", label: t.nav.wallet, icon: <WalletIcon /> },
+    { href: "/profile", label: t.nav.profile, icon: <UserIcon /> },
   ];
 
-  const ownerLinks = [
-    { href: "/owner", label: t.nav.dashboard },
-    { href: "/owner/slots", label: t.nav.slots },
-    { href: "/owner/bookings", label: t.nav.bookings },
-    { href: "/owner/revenue", label: t.nav.revenue },
+  const ownerLinks: { href: string; label: string; icon: ReactNode }[] = [
+    { href: "/owner", label: t.nav.dashboard, icon: <ChartIcon /> },
+    { href: "/owner/slots", label: t.nav.slots, icon: <ClipboardIcon /> },
+    { href: "/owner/bookings", label: t.nav.bookings, icon: <CalendarIcon /> },
+    { href: "/owner/revenue", label: t.nav.revenue, icon: <CurrencyIcon /> },
   ];
 
   const links = isOwnerSection ? ownerLinks : memberLinks;
@@ -56,10 +67,11 @@ export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
               key={link.href}
               href={link.href}
               className={clsx(
-                "flex flex-col items-center px-3 py-1 text-[11px] font-medium transition-colors",
+                "flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium transition-colors",
                 active ? "text-brand-600" : "text-slate-400 hover:text-slate-600",
               )}
             >
+              {link.icon}
               {link.label}
             </Link>
           );
@@ -67,16 +79,18 @@ export function NavBar({ role }: { role?: "MEMBER" | "OWNER" }) {
         {!isOwnerSection && role === "OWNER" && (
           <Link
             href="/owner"
-            className="flex flex-col items-center px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
+            className="flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
           >
+            <SwitchIcon />
             {t.nav.owner}
           </Link>
         )}
         {isOwnerSection && (
           <Link
             href="/home"
-            className="flex flex-col items-center px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
+            className="flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium text-slate-400 hover:text-slate-600"
           >
+            <SwitchIcon />
             {t.nav.member}
           </Link>
         )}

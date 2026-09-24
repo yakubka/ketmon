@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/Card";
 import { Badge, type TimeBandVariant } from "@/components/ui/Badge";
+import { StarIcon } from "@/components/icons/StarIcon";
 import { creditsToWonDisplay } from "@/lib/pricing";
 import Link from "next/link";
 
@@ -49,7 +50,7 @@ export function GymCard({
 
         <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
           <span>{distanceKm.toFixed(1)} km</span>
-          <span>&#9733; {rating.toFixed(1)}</span>
+          <span className="inline-flex items-center gap-0.5"><StarIcon className="h-3 w-3 text-amber-400" />{rating.toFixed(1)}</span>
           <span>{time}</span>
         </div>
 

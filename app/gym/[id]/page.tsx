@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { creditsToWonDisplay } from "@/lib/pricing";
+import { StarIcon } from "@/components/icons/StarIcon";
 import { createClient } from "@/lib/supabase/client";
 import { useMessages } from "@/lib/useMessages";
 
@@ -123,7 +124,7 @@ export default function GymDetailPage() {
       <div className="mb-6">
         <h1 className="text-xl font-bold text-slate-900">{gym.name}</h1>
         <p className="mt-1 text-sm text-slate-500">
-          &#9733; {gym.rating.toFixed(1)}
+          <StarIcon className="inline h-3.5 w-3.5 text-amber-400" /> {gym.rating.toFixed(1)}
           {gym.address && ` · ${gym.address}`}
         </p>
       </div>
