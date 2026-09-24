@@ -201,7 +201,7 @@ export default function GymDetailPage() {
         const available = activity.slots.filter((s) => s.booked < s.capacity);
         const options = available.map((s) => ({
           value: s.id,
-          label: `${new Date(s.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · ${s.creditCost}cr`,
+          label: new Date(s.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         }));
 
         return (

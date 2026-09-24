@@ -11,8 +11,8 @@ type WheelPickerProps = {
   label: string;
 };
 
-const ITEM_H = 44;
-const VISIBLE = 5;
+const ITEM_H = 40;
+const VISIBLE = 3;
 const HALF = Math.floor(VISIBLE / 2);
 const HEIGHT = ITEM_H * VISIBLE;
 const PAD = ITEM_H * HALF;
@@ -76,13 +76,13 @@ export function WheelPicker({ options, value, onChange, label }: WheelPickerProp
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" onClick={() => setOpen(false)} />
 
-          <div className="relative w-full max-w-lg animate-slide-up rounded-t-2xl bg-white pb-6 shadow-xl">
-            <div className="flex items-center justify-between px-5 py-3.5">
-              <button onClick={() => setOpen(false)} className="text-sm text-slate-400">
+          <div className="relative mb-4 w-full max-w-[240px] animate-slide-up rounded-2xl bg-white pb-4 shadow-xl">
+            <div className="flex items-center justify-between px-3 py-2.5">
+              <button onClick={() => setOpen(false)} className="text-xs text-slate-400">
                 Cancel
               </button>
-              <span className="text-sm font-semibold text-slate-800">{label}</span>
-              <button onClick={confirm} className="text-sm font-semibold text-teal-500">
+              <span className="text-xs font-semibold text-slate-800">{label}</span>
+              <button onClick={confirm} className="text-xs font-semibold text-teal-500">
                 Done
               </button>
             </div>
