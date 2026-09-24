@@ -27,7 +27,8 @@
     "any": "Any",
     "quickBook": "Book",
     "nextSlotLabel": "Next",
-    "noUpcoming": "No slots this week"
+    "noUpcoming": "No slots this week",
+    "matchesInterests": "For you"
   },
   "map": {
     "details": "Details",

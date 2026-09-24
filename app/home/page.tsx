@@ -61,6 +61,7 @@ type Messages = {
     quickBook: string;
     nextSlotLabel: string;
     noUpcoming: string;
+    matchesInterests: string;
   };
   booking: {
     confirmTitle: string;
@@ -95,12 +96,17 @@ function formatSport(sport: string, locale: string): string {
 }
 
 function recommendScore(gym: GymScored, maxDist: number, favoriteSports: string[]): number {
-  const proximity = maxDist > 0 ? Math.max(0, 1 - gym.distance / maxDist) * 35 : 20;
-  const rating = (gym.rating / 5) * 35;
-  const pop = Math.min(gym.popularity / 100, 1) * 20;
-  const variety = Math.min(gym.sports.length / 3, 1) * 10;
-  const favoriteBonus = favoriteSports.length > 0 && gym.sports.some((s) => favoriteSports.includes(s)) ? 15 : 0;
-  return proximity + rating + pop + variety + favoriteBonus;
+  const proximity = maxDist > 0 ? Math.max(0, 1 - gym.distance / maxDist) * 30 : 20;
+  const rating = (gym.rating / 5) * 25;
+  const pop = Math.min(gym.popularity / 100, 1) * 10;
+  const variety = Math.min(gym.sports.length / 3, 1) * 5;
+  const matchCount = favoriteSports.length > 0 ? gym.sports.filter((s) => favoriteSports.includes(s)).length : 0;
+  const favoriteMatch = favoriteSports.length > 0 ? (matchCount / favoriteSports.length) * 30 : 0;
+  return proximity + rating + pop + variety + favoriteMatch;
+}
+
+function matchesFavorites(gym: GymSummary, favoriteSports: string[]): boolean {
+  return favoriteSports.length > 0 && gym.sports.some((s) => favoriteSports.includes(s));
 }
 
 export default function HomePage() {
@@ -221,18 +227,8 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-3xl pb-20 lg:max-w-5xl xl:max-w-7xl">
       <div className="px-4 pt-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">Switch</h1>
-            <p className="mt-0.5 text-xs text-slate-500">{t.home.subtitle}</p>
-          </div>
-          <Link
-            href="/map"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
-          >
-            <LocationPinIcon className="h-[18px] w-[18px]" />
-          </Link>
-        </div>
+        <h1 className="text-xl font-bold text-slate-900">Switch</h1>
+        <p className="mt-0.5 text-xs text-slate-500">{t.home.subtitle}</p>
       </div>
 
       <div className="mt-4 flex gap-2 px-4">
@@ -245,6 +241,12 @@ export default function HomePage() {
             className="w-full rounded-full bg-slate-100 py-2.5 pl-10 pr-4 text-sm text-slate-700 outline-none transition-shadow focus:bg-white focus:ring-2 focus:ring-teal-200"
           />
         </div>
+        <Link
+          href="/map"
+          className="flex h-[42px] w-[42px] flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
+        >
+          <LocationPinIcon className="h-[18px] w-[18px]" />
+        </Link>
         <button
           onClick={() => setFilterOpen((v) => !v)}
           className="relative flex h-[42px] w-[42px] flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200"
@@ -330,6 +332,7 @@ export default function HomePage() {
                 gym.nextSlot && preferredTimeBand
                   ? bandForHour(new Date(gym.nextSlot.startTime).getHours()) === preferredTimeBand
                   : false;
+              const matchesInterests = matchesFavorites(gym, favoriteSports);
 
               return (
                 <Link key={gym.id} href={`/gym/${gym.id}`}>
@@ -341,6 +344,11 @@ export default function HomePage() {
                         sport={gym.sports[0] ?? "gym"}
                         className="h-full w-full object-cover transition-transform group-hover:scale-105"
                       />
+                      {matchesInterests && (
+                        <div className="absolute left-1.5 top-1.5 rounded-full bg-teal-500 px-1.5 py-0.5 text-[9px] font-semibold text-white shadow-sm">
+                          {t.home.matchesInterests}
+                        </div>
+                      )}
                       <div className="absolute bottom-1.5 left-1.5 flex items-center gap-0.5 rounded-full bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
                         <StarIcon className="h-2.5 w-2.5 text-amber-400" />
                         {gym.rating.toFixed(1)}

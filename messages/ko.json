@@ -27,7 +27,8 @@
     "any": "전체",
     "quickBook": "예약",
     "nextSlotLabel": "다음",
-    "noUpcoming": "이번 주 예약 가능한 시간이 없어요"
+    "noUpcoming": "이번 주 예약 가능한 시간이 없어요",
+    "matchesInterests": "맞춤 추천"
   },
   "map": {
     "details": "상세보기",
