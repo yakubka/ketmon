@@ -9,7 +9,6 @@ import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { WheelPicker } from "@/components/WheelPicker";
 import { SportIcon } from "@/components/icons/SportIcons";
 import { LocationPinIcon } from "@/components/icons/UIIcons";
-import { creditsToWonDisplay } from "@/lib/pricing";
 import { StarIcon } from "@/components/icons/StarIcon";
 import { createClient } from "@/lib/supabase/client";
 import { useMessages } from "@/lib/useMessages";
@@ -261,9 +260,6 @@ export default function GymDetailPage() {
                       )}
                       <span className="text-xs font-semibold text-brand-700">
                         {slot.creditCost} credits
-                      </span>
-                      <span className="text-[10px] text-slate-300">
-                        (~&#8361;{creditsToWonDisplay(slot.creditCost).toLocaleString()})
                       </span>
                     </div>
                   </div>

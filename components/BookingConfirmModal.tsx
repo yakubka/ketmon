@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { creditsToWonDisplay } from "@/lib/pricing";
 import { useMessages } from "@/lib/useMessages";
 
 interface BookingConfirmModalProps {
@@ -88,12 +87,7 @@ export function BookingConfirmModal({
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-500">{t.booking.creditCost}</span>
-                <span className="font-semibold">
-                  {classSlot.creditCost} credits
-                  <span className="ml-1 text-xs text-slate-400">
-                    (~&#8361;{creditsToWonDisplay(classSlot.creditCost).toLocaleString()})
-                  </span>
-                </span>
+                <span className="font-semibold">{classSlot.creditCost} credits</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">{t.booking.balanceAfter}</span>
@@ -120,7 +114,7 @@ export function BookingConfirmModal({
               <Button
                 onClick={handleConfirm}
                 disabled={!canAfford || state === "loading"}
-                className="flex-1"
+                className="flex-1 !bg-teal-500 shadow-md shadow-teal-200 hover:!bg-teal-600"
               >
                 {state === "loading" ? t.booking.booking : t.booking.confirm}
               </Button>
