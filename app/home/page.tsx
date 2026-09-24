@@ -1,31 +1,16 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { GymCard } from "@/components/GymCard";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { StarIcon } from "@/components/icons/StarIcon";
 import { distanceKm } from "@/lib/distance";
 import { useMessages } from "@/lib/useMessages";
 import Link from "next/link";
 
 const GANGNAM = { lat: 37.4979, lng: 127.0276 };
 
-type Slot = {
-  id: string;
-  startTime: string;
-  timeBand: "OFF_PEAK" | "STANDARD" | "PEAK";
-  creditCost: number;
-  capacity: number;
-  booked: number;
-};
-
-type Activity = {
-  id: string;
-  name: string;
-  sport: string;
-  slots: Slot[];
-};
-
-type Gym = {
+type GymSummary = {
   id: string;
   name: string;
   lat: number;
@@ -35,14 +20,7 @@ type Gym = {
   tier: string;
   area: string | null;
   imageUrl: string | null;
-  activities: Activity[];
-};
-
-type FlatItem = {
-  gym: Gym;
-  activity: Activity;
-  slot: Slot;
-  distance: number;
+  sports: string[];
 };
 
 type Messages = {
@@ -55,15 +33,21 @@ type Messages = {
     allAreas: string;
     noClasses: string;
   };
-  timeBand: Record<string, string>;
 };
 
+const DISTANCE_OPTIONS = [
+  { value: 0, label: "All" },
+  { value: 3, label: "3 km" },
+  { value: 5, label: "5 km" },
+  { value: 10, label: "10 km" },
+];
+
 export default function HomePage() {
-  const [gyms, setGyms] = useState<Gym[]>([]);
+  const [gyms, setGyms] = useState<GymSummary[]>([]);
   const [userPos, setUserPos] = useState(GANGNAM);
   const [sportFilter, setSportFilter] = useState("");
-  const [bandFilter, setBandFilter] = useState("");
   const [areaFilter, setAreaFilter] = useState("");
+  const [distanceFilter, setDistanceFilter] = useState(0);
   const [loading, setLoading] = useState(true);
   const t = useMessages<Messages>();
 
@@ -83,22 +67,16 @@ export default function HomePage() {
       });
   }, []);
 
-  const items = useMemo(() => {
-    const flat: FlatItem[] = [];
-    for (const gym of gyms) {
-      const dist = distanceKm(userPos.lat, userPos.lng, gym.lat, gym.lng);
-      for (const activity of gym.activities) {
-        for (const slot of activity.slots) {
-          flat.push({ gym, activity, slot, distance: dist });
-        }
-      }
-    }
-    return flat.sort((a, b) => a.distance - b.distance);
+  const gymsWithDistance = useMemo(() => {
+    return gyms.map((g) => ({
+      ...g,
+      distance: distanceKm(userPos.lat, userPos.lng, g.lat, g.lng),
+    })).sort((a, b) => a.distance - b.distance);
   }, [gyms, userPos]);
 
   const sports = useMemo(() => {
     const set = new Set<string>();
-    for (const g of gyms) for (const a of g.activities) set.add(a.sport);
+    for (const g of gyms) for (const s of g.sports) set.add(s);
     return Array.from(set).sort();
   }, [gyms]);
 
@@ -109,13 +87,13 @@ export default function HomePage() {
   }, [gyms]);
 
   const filtered = useMemo(() => {
-    return items.filter((item) => {
-      if (sportFilter && item.activity.sport !== sportFilter) return false;
-      if (bandFilter && item.slot.timeBand !== bandFilter) return false;
-      if (areaFilter && item.gym.area !== areaFilter) return false;
+    return gymsWithDistance.filter((g) => {
+      if (distanceFilter > 0 && g.distance > distanceFilter) return false;
+      if (sportFilter && !g.sports.includes(sportFilter)) return false;
+      if (areaFilter && g.area !== areaFilter) return false;
       return true;
     });
-  }, [items, sportFilter, bandFilter, areaFilter]);
+  }, [gymsWithDistance, sportFilter, areaFilter, distanceFilter]);
 
   if (!t) return null;
 
@@ -157,14 +135,13 @@ export default function HomePage() {
         </select>
 
         <select
-          value={bandFilter}
-          onChange={(e) => setBandFilter(e.target.value)}
+          value={distanceFilter}
+          onChange={(e) => setDistanceFilter(Number(e.target.value))}
           className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700"
         >
-          <option value="">{t.home.allTimes}</option>
-          <option value="OFF_PEAK">{t.timeBand.OFF_PEAK}</option>
-          <option value="STANDARD">{t.timeBand.STANDARD}</option>
-          <option value="PEAK">{t.timeBand.PEAK}</option>
+          {DISTANCE_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
         </select>
       </div>
 
@@ -172,7 +149,7 @@ export default function HomePage() {
         {loading && (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-28 animate-pulse rounded-xl bg-slate-100" />
+              <div key={i} className="h-24 animate-pulse rounded-xl bg-slate-100" />
             ))}
           </div>
         )}
@@ -183,20 +160,38 @@ export default function HomePage() {
           </p>
         )}
 
-        {filtered.map((item) => (
-          <GymCard
-            key={`${item.gym.id}-${item.slot.id}`}
-            gymId={item.gym.id}
-            gymName={item.gym.name}
-            activityName={item.activity.name}
-            distanceKm={item.distance}
-            rating={item.gym.rating}
-            timeBand={item.slot.timeBand}
-            creditCost={item.slot.creditCost}
-            startTime={item.slot.startTime}
-            timeBandLabel={t.timeBand[item.slot.timeBand] ?? item.slot.timeBand}
-            imageUrl={item.gym.imageUrl}
-          />
+        {filtered.map((gym) => (
+          <Link key={gym.id} href={`/gym/${gym.id}`}>
+            <Card className="flex gap-3 p-3 transition-shadow hover:shadow-md">
+              {gym.imageUrl && (
+                <img
+                  src={gym.imageUrl}
+                  alt={gym.name}
+                  className="h-20 w-20 flex-shrink-0 rounded-lg object-cover"
+                />
+              )}
+              <div className="flex-1 overflow-hidden">
+                <p className="truncate text-sm font-semibold text-slate-900">{gym.name}</p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  <StarIcon className="inline h-3 w-3 text-amber-400" /> {gym.rating.toFixed(1)}
+                  {gym.area && ` · ${gym.area}`}
+                  {` · ${gym.distance.toFixed(1)} km`}
+                </p>
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {gym.sports.slice(0, 3).map((s) => (
+                    <span key={s} className="rounded-full bg-teal-50 px-2 py-0.5 text-[10px] text-teal-700">
+                      {s}
+                    </span>
+                  ))}
+                  {gym.sports.length > 3 && (
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">
+                      +{gym.sports.length - 3}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>

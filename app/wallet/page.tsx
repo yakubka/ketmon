@@ -27,7 +27,11 @@ type Messages = {
   };
 };
 
-const PACKS = [10, 30, 50];
+const PLANS = [
+  { credits: 20, price: 29900, label: "Starter", perCredit: 1495 },
+  { credits: 40, price: 49900, label: "Standard", perCredit: 1248, popular: true },
+  { credits: 80, price: 79900, label: "Premium", perCredit: 999 },
+];
 
 export default function WalletPage() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -57,13 +61,13 @@ export default function WalletPage() {
     });
   }, []);
 
-  async function handleTopUp(amount: number) {
+  async function handleTopUp(credits: number) {
     if (!userId) return;
-    setTopUpLoading(amount);
+    setTopUpLoading(credits);
     const res = await fetch("/api/wallet/topup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, amount }),
+      body: JSON.stringify({ userId, amount: credits }),
     });
     const data = await res.json();
     setBalance(data.creditBalance);
@@ -99,17 +103,36 @@ export default function WalletPage() {
 
       <section className="mt-6">
         <h2 className="text-sm font-semibold text-slate-500">{t.wallet.buyCredits}</h2>
-        <div className="mt-3 flex gap-3">
-          {PACKS.map((amount) => (
-            <Button
-              key={amount}
-              variant="secondary"
-              className="flex-1"
-              onClick={() => handleTopUp(amount)}
-              disabled={topUpLoading === amount}
+        <div className="mt-3 space-y-3">
+          {PLANS.map((plan) => (
+            <Card
+              key={plan.credits}
+              className={`relative flex items-center justify-between p-4 ${plan.popular ? "ring-2 ring-teal-500" : ""}`}
             >
-              {topUpLoading === amount ? "..." : `${amount} cr`}
-            </Button>
+              {plan.popular && (
+                <span className="absolute -top-2.5 left-4 rounded-full bg-teal-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                  POPULAR
+                </span>
+              )}
+              <div>
+                <p className="text-sm font-semibold text-slate-900">{plan.label}</p>
+                <p className="text-xs text-slate-500">{plan.credits} credits</p>
+                <p className="mt-0.5 text-[10px] text-slate-400">
+                  ~&#8361;{plan.perCredit.toLocaleString()} / credit
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-bold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
+                <Button
+                  variant="primary"
+                  className="mt-1.5 text-xs"
+                  onClick={() => handleTopUp(plan.credits)}
+                  disabled={topUpLoading === plan.credits}
+                >
+                  {topUpLoading === plan.credits ? "..." : t.wallet.topUp}
+                </Button>
+              </div>
+            </Card>
           ))}
         </div>
       </section>
@@ -139,8 +162,8 @@ export default function WalletPage() {
               <span
                 className={`font-semibold ${txn.amount > 0 ? "text-emerald-600" : "text-red-500"}`}
               >
-                {txn.amount > 0 ? "+" : "−"}
-                {Math.abs(txn.amount)}
+                {txn.amount > 0 ? "+" : ""}
+                {txn.amount}
               </span>
             </div>
           ))}
