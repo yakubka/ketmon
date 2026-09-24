@@ -11,7 +11,10 @@
     "toggleMap": "View map",
     "toggleList": "View list",
     "creditsFrom": "credits from",
-    "availableToday": "Available today"
+    "availableToday": "Available today",
+    "allSports": "All sports",
+    "allTimes": "All times",
+    "noClasses": "No classes found"
   },
   "timeBand": {
     "OFF_PEAK": "Off-peak",
@@ -20,30 +23,78 @@
   },
   "detail": {
     "bookButton": "Book",
-    "cancelPolicy": "Free cancellation up to 6 hours before class"
+    "full": "Full",
+    "cancelPolicy": "Free cancellation up to 6 hours before class",
+    "gymNotFound": "Gym not found"
   },
   "booking": {
-    "confirmTitle": "Booking confirmed",
-    "creditsDeducted": "Credits deducted",
+    "confirmTitle": "Confirm booking",
+    "creditCost": "Credit cost",
     "balanceAfter": "Balance after",
-    "cancelWindowNotice": "Free cancellation up to 6 hours before"
+    "cancelWindowNotice": "Free cancellation up to 6 hours before class",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "booking": "Booking...",
+    "booked": "Booked",
+    "enjoy": "Enjoy your class",
+    "failed": "Booking failed. Please try again."
   },
   "myBookings": {
-    "title": "My bookings",
+    "title": "My Bookings",
     "upcoming": "Upcoming",
     "past": "Past",
     "cancel": "Cancel",
-    "freeCancel": "Free cancellation (full refund)",
-    "lateCancel": "Late cancellation (no refund)"
+    "freeCancel": "Free cancel (full refund)",
+    "lateCancel": "Late cancel (no refund)",
+    "noUpcoming": "No upcoming bookings",
+    "noPast": "No past bookings"
   },
   "wallet": {
     "title": "Wallet",
     "balance": "Balance",
+    "credits": "credits",
     "buyCredits": "Buy credits",
-    "history": "Transaction history"
+    "history": "History",
+    "noTransactions": "No transactions yet",
+    "topUp": "Top-up",
+    "bookingTxn": "Booking",
+    "refund": "Refund"
   },
   "profile": {
     "title": "Profile",
-    "language": "Language"
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "balance": "Balance",
+    "language": "Language",
+    "logout": "Log out"
+  },
+  "nav": {
+    "home": "Home",
+    "bookings": "Bookings",
+    "wallet": "Wallet",
+    "profile": "Profile",
+    "owner": "Owner",
+    "member": "Member",
+    "dashboard": "Dashboard",
+    "slots": "Slots",
+    "revenue": "Revenue"
+  },
+  "owner": {
+    "dashboard": "Owner Dashboard",
+    "offPeakFill": "Off-peak fill",
+    "upcoming": "Upcoming",
+    "revenue": "Revenue",
+    "slots": "Slots",
+    "peakEnabled": "Enabled",
+    "peakOffOnly": "Off-peak only",
+    "peakSlots": "Peak slots",
+    "incomingBookings": "Incoming Bookings",
+    "noBookings": "No bookings yet",
+    "revenueTitle": "Revenue",
+    "payoutsReceived": "Payouts received",
+    "noShowCompensation": "No-show compensation",
+    "noShowMessage": "You still got paid when someone didn't show",
+    "conversionCommissions": "Conversion commissions"
   }
 }

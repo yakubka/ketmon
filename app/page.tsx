@@ -3,19 +3,14 @@
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { useState, useEffect } from "react";
+import { useMessages } from "@/lib/useMessages";
 
 type Messages = {
   welcome: { headline: string; subline: string; continueWithGoogle: string };
 };
 
 export default function WelcomePage() {
-  const [messages, setMessages] = useState<Messages | null>(null);
-
-  useEffect(() => {
-    const locale = localStorage.getItem("ketmon-locale") ?? "ko";
-    import(`@/messages/${locale}.json`).then((m) => setMessages(m.default));
-  }, []);
+  const messages = useMessages<Messages>();
 
   async function handleLogin() {
     const supabase = createClient();
@@ -48,7 +43,7 @@ export default function WelcomePage() {
         </div>
 
         <p className="mt-6 text-xs text-slate-400">
-          Ketmon — 무약정 운동
+          Ketmon
         </p>
       </div>
     </div>

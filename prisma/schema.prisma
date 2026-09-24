@@ -4,15 +4,39 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  url = env("DATABASE_URL")
 }
 
-enum Role { MEMBER OWNER }
-enum VenueTier { NEIGHBORHOOD MID PREMIUM }
-enum TimeBand { OFF_PEAK STANDARD PEAK }
-enum BookingStatus { BOOKED ATTENDED LATE_CANCELLED NO_SHOW CANCELLED }
-enum TxnType { PURCHASE SPEND REFUND }
+enum Role {
+  MEMBER
+  OWNER
+}
+
+enum VenueTier {
+  NEIGHBORHOOD
+  MID
+  PREMIUM
+}
+
+enum TimeBand {
+  OFF_PEAK
+  STANDARD
+  PEAK
+}
+
+enum BookingStatus {
+  BOOKED
+  ATTENDED
+  LATE_CANCELLED
+  NO_SHOW
+  CANCELLED
+}
+
+enum TxnType {
+  PURCHASE
+  SPEND
+  REFUND
+}
 
 model User {
   id            String   @id @default(cuid())

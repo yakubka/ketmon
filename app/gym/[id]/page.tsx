@@ -5,7 +5,9 @@ import { useParams } from "next/navigation";
 import { Badge, type TimeBandVariant } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { BookingConfirmModal } from "@/components/BookingConfirmModal";
 import { creditsToWonDisplay } from "@/lib/pricing";
+import { createClient } from "@/lib/supabase/client";
 
 type Slot = {
   id: string;
@@ -32,6 +34,8 @@ type Gym = {
   activities: Activity[];
 };
 
+type FlatSlot = Slot & { activityName: string };
+
 const BAND_LABELS: Record<string, string> = {
   OFF_PEAK: "Off-peak",
   STANDARD: "Standard",
@@ -42,6 +46,9 @@ export default function GymDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [gym, setGym] = useState<Gym | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [creditBalance, setCreditBalance] = useState(0);
+  const [bookingSlot, setBookingSlot] = useState<FlatSlot | null>(null);
 
   useEffect(() => {
     fetch("/api/gyms")
@@ -50,7 +57,36 @@ export default function GymDetailPage() {
         setGym(gyms.find((g) => g.id === id) ?? null);
         setLoading(false);
       });
+
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email) {
+        fetch(`/api/user?email=${encodeURIComponent(data.user.email)}`)
+          .then((r) => r.json())
+          .then((u) => {
+            setUserId(u.id);
+            setCreditBalance(u.creditBalance);
+          });
+      }
+    });
   }, [id]);
+
+  function handleBooked() {
+    if (!userId) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email) {
+        fetch(`/api/user?email=${encodeURIComponent(data.user.email)}`)
+          .then((r) => r.json())
+          .then((u) => setCreditBalance(u.creditBalance));
+      }
+    });
+    fetch("/api/gyms")
+      .then((r) => r.json())
+      .then((gyms: Gym[]) => {
+        setGym(gyms.find((g) => g.id === id) ?? null);
+      });
+  }
 
   if (loading) {
     return (
@@ -72,7 +108,7 @@ export default function GymDetailPage() {
     );
   }
 
-  const allSlots = gym.activities.flatMap((a) =>
+  const allSlots: FlatSlot[] = gym.activities.flatMap((a) =>
     a.slots.map((s) => ({ ...s, activityName: a.name })),
   );
 
@@ -124,6 +160,7 @@ export default function GymDetailPage() {
                 variant={full ? "ghost" : "primary"}
                 disabled={full}
                 className="text-xs"
+                onClick={() => !full && setBookingSlot(slot)}
               >
                 {full ? "Full" : "Book"}
               </Button>
@@ -131,6 +168,21 @@ export default function GymDetailPage() {
           );
         })}
       </div>
+
+      {bookingSlot && userId && (
+        <BookingConfirmModal
+          classSlot={{
+            id: bookingSlot.id,
+            creditCost: bookingSlot.creditCost,
+            startTime: bookingSlot.startTime,
+            activityName: bookingSlot.activityName,
+          }}
+          userId={userId}
+          creditBalance={creditBalance}
+          onClose={() => setBookingSlot(null)}
+          onBooked={handleBooked}
+        />
+      )}
     </div>
   );
 }

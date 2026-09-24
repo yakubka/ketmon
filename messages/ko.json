@@ -11,7 +11,10 @@
     "toggleMap": "지도로 보기",
     "toggleList": "목록으로 보기",
     "creditsFrom": "크레딧부터",
-    "availableToday": "오늘 예약 가능"
+    "availableToday": "오늘 예약 가능",
+    "allSports": "모든 종목",
+    "allTimes": "모든 시간",
+    "noClasses": "수업이 없습니다"
   },
   "timeBand": {
     "OFF_PEAK": "한가한 시간",
@@ -20,13 +23,21 @@
   },
   "detail": {
     "bookButton": "예약하기",
-    "cancelPolicy": "수업 6시간 전까지 무료 취소"
+    "full": "마감",
+    "cancelPolicy": "수업 6시간 전까지 무료 취소",
+    "gymNotFound": "시설을 찾을 수 없습니다"
   },
   "booking": {
-    "confirmTitle": "예약 완료",
-    "creditsDeducted": "차감된 크레딧",
-    "balanceAfter": "남은 잔액",
-    "cancelWindowNotice": "6시간 전까지 무료 취소 가능"
+    "confirmTitle": "예약 확인",
+    "creditCost": "크레딧 비용",
+    "balanceAfter": "예약 후 잔액",
+    "cancelWindowNotice": "수업 6시간 전까지 무료 취소 가능",
+    "confirm": "확인",
+    "cancel": "취소",
+    "booking": "예약 중...",
+    "booked": "예약 완료",
+    "enjoy": "수업을 즐기세요",
+    "failed": "예약에 실패했습니다. 다시 시도해주세요."
   },
   "myBookings": {
     "title": "내 예약",
@@ -34,16 +45,56 @@
     "past": "지난 예약",
     "cancel": "취소하기",
     "freeCancel": "무료 취소 (전액 환불)",
-    "lateCancel": "늦은 취소 (환불 불가)"
+    "lateCancel": "늦은 취소 (환불 불가)",
+    "noUpcoming": "예정된 예약이 없습니다",
+    "noPast": "지난 예약이 없습니다"
   },
   "wallet": {
     "title": "지갑",
     "balance": "잔액",
+    "credits": "크레딧",
     "buyCredits": "크레딧 충전",
-    "history": "거래 내역"
+    "history": "거래 내역",
+    "noTransactions": "거래 내역이 없습니다",
+    "topUp": "충전",
+    "bookingTxn": "예약",
+    "refund": "환불"
   },
   "profile": {
     "title": "프로필",
-    "language": "언어"
+    "name": "이름",
+    "email": "이메일",
+    "role": "역할",
+    "balance": "잔액",
+    "language": "언어",
+    "logout": "로그아웃"
+  },
+  "nav": {
+    "home": "홈",
+    "bookings": "예약",
+    "wallet": "지갑",
+    "profile": "프로필",
+    "owner": "오너",
+    "member": "멤버",
+    "dashboard": "대시보드",
+    "slots": "슬롯",
+    "revenue": "수익"
+  },
+  "owner": {
+    "dashboard": "오너 대시보드",
+    "offPeakFill": "한가한 시간 이용률",
+    "upcoming": "예정",
+    "revenue": "수익",
+    "slots": "슬롯",
+    "peakEnabled": "활성화",
+    "peakOffOnly": "한가한 시간만",
+    "peakSlots": "혼잡 시간 슬롯",
+    "incomingBookings": "들어온 예약",
+    "noBookings": "아직 예약이 없습니다",
+    "revenueTitle": "수익",
+    "payoutsReceived": "지급 받은 금액",
+    "noShowCompensation": "노쇼 보상",
+    "noShowMessage": "노쇼여도 정산은 받았어요",
+    "conversionCommissions": "전환 수수료"
   }
 }
