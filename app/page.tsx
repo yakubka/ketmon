@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { SportIcon } from "@/components/icons/SportIcons";
 import { useMessages } from "@/lib/useMessages";
 import Link from "next/link";
 
@@ -37,14 +38,14 @@ type Messages = {
 };
 
 const SPORTS = [
-  { icon: "\u{1F3CB}", ko: "트레이닝", en: "Gym" },
-  { icon: "\u{1F3BE}", ko: "테니스", en: "Tennis" },
-  { icon: "\u{1F3CA}", ko: "수영", en: "Swimming" },
-  { icon: "\u{1F9D8}", ko: "요가", en: "Yoga" },
-  { icon: "\u{1F94A}", ko: "박싱", en: "Boxing" },
-  { icon: "\u{1F938}", ko: "필라테스", en: "Pilates" },
-  { icon: "\u{1F3C3}", ko: "크로스핏", en: "CrossFit" },
-  { icon: "\u{1F483}", ko: "댄스", en: "Dance" },
+  { id: "gym", ko: "트레이닝", en: "Gym" },
+  { id: "tennis", ko: "테니스", en: "Tennis" },
+  { id: "swimming", ko: "수영", en: "Swimming" },
+  { id: "yoga", ko: "요가", en: "Yoga" },
+  { id: "boxing", ko: "박싱", en: "Boxing" },
+  { id: "pilates", ko: "필라테스", en: "Pilates" },
+  { id: "crossfit", ko: "크로스핏", en: "CrossFit" },
+  { id: "dance", ko: "댄스", en: "Dance" },
 ];
 
 const CITIES_KO = [
@@ -211,7 +212,9 @@ export default function LandingPage() {
                 key={sport.en}
                 className="flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
-                <span className="text-2xl">{sport.icon}</span>
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-teal-50 text-teal-600">
+                  <SportIcon sport={sport.id} className="h-[18px] w-[18px]" />
+                </div>
                 <span className="text-sm font-medium text-slate-700">
                   {locale === "ko" ? sport.ko : sport.en}
                 </span>
