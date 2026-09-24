@@ -60,11 +60,26 @@
     "nextPhoto": "Next photo",
     "closePhotoViewer": "Close photo viewer",
     "credits": "credits",
-    "noClassesOnDay": "No classes on this day"
+    "noClassesOnDay": "No classes on this day",
+    "slotsTab": "Slots",
+    "subscribeTab": "Subscribe"
   },
   "reviews": {
     "title": "Reviews",
     "noReviews": "No reviews yet"
+  },
+  "subscription": {
+    "month": "month",
+    "months": "months",
+    "perMonth": "month",
+    "save": "off",
+    "subscribe": "Subscribe",
+    "confirmTitle": "Confirm subscription",
+    "confirmBody": "Demo only - no payment is actually processed.",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "subscribed": "Subscribed",
+    "enjoy": "Enjoy unlimited access"
   },
   "booking": {
     "confirmTitle": "Confirm booking",

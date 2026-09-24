@@ -60,11 +60,26 @@
     "nextPhoto": "다음 사진",
     "closePhotoViewer": "사진 뷰어 닫기",
     "credits": "크레딧",
-    "noClassesOnDay": "이 날짜에는 클래스가 없습니다"
+    "noClassesOnDay": "이 날짜에는 클래스가 없습니다",
+    "slotsTab": "예약",
+    "subscribeTab": "구독"
   },
   "reviews": {
     "title": "후기",
     "noReviews": "아직 후기가 없습니다"
+  },
+  "subscription": {
+    "month": "개월",
+    "months": "개월",
+    "perMonth": "월",
+    "save": "할인",
+    "subscribe": "구독하기",
+    "confirmTitle": "구독 확인",
+    "confirmBody": "데모용입니다 - 실제 결제는 이루어지지 않습니다.",
+    "confirm": "확인",
+    "cancel": "취소",
+    "subscribed": "구독 완료",
+    "enjoy": "무제한으로 이용해보세요"
   },
   "booking": {
     "confirmTitle": "예약 확인",

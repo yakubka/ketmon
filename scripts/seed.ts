@@ -200,6 +200,33 @@ function gymAmenities(index: number) {
   };
 }
 
+function offersSubscription(index: number): boolean {
+  return index % 3 === 0;
+}
+
+function basePriceForTier(tier: VenueTier): number {
+  if (tier === VenueTier.PREMIUM) return 99000;
+  if (tier === VenueTier.MID) return 79000;
+  return 59000;
+}
+
+async function seedSubscriptionPlans(gymId: string, basePrice: number) {
+  const terms = [
+    { months: 1, discountPct: 0 },
+    { months: 3, discountPct: 8 },
+    { months: 6, discountPct: 15 },
+    { months: 12, discountPct: 25 },
+  ];
+  await prisma.subscriptionPlan.createMany({
+    data: terms.map(({ months, discountPct }) => ({
+      gymId,
+      months,
+      discountPct,
+      price: Math.round((basePrice * months * (1 - discountPct / 100)) / 1000) * 1000,
+    })),
+  });
+}
+
 async function seedReviews(gymId: string, rating: number, index: number) {
   const positive = [
     "시설이 깔끔하고 기구 관리가 잘 되어 있어요.",
@@ -253,6 +280,7 @@ async function main() {
           imageUrl: images[0],
           images,
           ...gymAmenities(i),
+          offersSubscription: offersSubscription(i),
           tier,
           allowsPeak,
           rating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
@@ -261,6 +289,9 @@ async function main() {
       });
       gyms.push(gym);
       await seedReviews(gym.id, gym.rating, i);
+      if (offersSubscription(i)) {
+        await seedSubscriptionPlans(gym.id, basePriceForTier(tier));
+      }
 
       const osmActivities = sportToActivity(v.sport);
       const shuffled = [...SPORTS].sort(() => Math.random() - 0.5);
@@ -318,6 +349,7 @@ async function main() {
           imageUrl: images[0],
           images,
           ...gymAmenities(i),
+          offersSubscription: offersSubscription(i),
           tier,
           allowsPeak,
           rating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
@@ -326,6 +358,9 @@ async function main() {
       });
       gyms.push(gym);
       await seedReviews(gym.id, gym.rating, i);
+      if (offersSubscription(i)) {
+        await seedSubscriptionPlans(gym.id, basePriceForTier(tier));
+      }
 
       const shuffled = [...SPORTS].sort(() => Math.random() - 0.5);
       const activities = shuffled.slice(0, 3 + Math.floor(Math.random() * 4));
