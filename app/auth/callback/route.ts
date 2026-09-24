@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
   }
 
   const email = data.session.user.email;
+  const providerToken = data.session.provider_token ?? null;
+  const providerRefreshToken = data.session.provider_refresh_token ?? null;
+
   if (email) {
     const existing = await prisma.user.findUnique({ where: { email } });
     if (!existing) {
@@ -28,6 +31,16 @@ export async function GET(req: NextRequest) {
           name: data.session.user.user_metadata?.full_name ?? null,
           role: "MEMBER",
           creditBalance: 30,
+          googleAccessToken: providerToken,
+          googleRefreshToken: providerRefreshToken,
+        },
+      });
+    } else {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          googleAccessToken: providerToken ?? existing.googleAccessToken,
+          googleRefreshToken: providerRefreshToken ?? existing.googleRefreshToken,
         },
       });
     }

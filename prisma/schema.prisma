@@ -40,16 +40,18 @@ enum TxnType {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  name          String?
-  locale        String   @default("ko")
-  role          Role     @default(MEMBER)
-  creditBalance Int      @default(30)
-  gyms          Gym[]
-  bookings      Booking[]
-  transactions  CreditTransaction[]
-  createdAt     DateTime @default(now())
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  name                String?
+  locale              String   @default("ko")
+  role                Role     @default(MEMBER)
+  creditBalance       Int      @default(30)
+  googleAccessToken   String?
+  googleRefreshToken  String?
+  gyms                Gym[]
+  bookings            Booking[]
+  transactions        CreditTransaction[]
+  createdAt           DateTime @default(now())
 }
 
 model Gym {
@@ -93,14 +95,15 @@ model ClassSlot {
 }
 
 model Booking {
-  id          String        @id @default(cuid())
-  userId      String
-  user        User          @relation(fields: [userId], references: [id])
-  classSlotId String
-  classSlot   ClassSlot     @relation(fields: [classSlotId], references: [id])
-  status      BookingStatus @default(BOOKED)
-  creditsPaid Int
-  createdAt   DateTime      @default(now())
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+  classSlotId     String
+  classSlot       ClassSlot     @relation(fields: [classSlotId], references: [id])
+  status          BookingStatus @default(BOOKED)
+  creditsPaid     Int
+  calendarEventId String?
+  createdAt       DateTime      @default(now())
 }
 
 model CreditTransaction {

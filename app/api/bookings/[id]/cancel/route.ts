@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, TxnType } from "@prisma/client";
 import { resolveCancellation } from "@/lib/booking-rules";
+import { deleteCalendarEvent } from "@/lib/google-calendar";
 
 const prisma = new PrismaClient();
 
-// POST /api/bookings/:id/cancel
 export async function POST(_req: NextRequest, { params }: { params: { id: string } }) {
   const result = await prisma.$transaction(async (tx) => {
     const booking = await tx.booking.findUniqueOrThrow({
@@ -37,6 +37,17 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
           bookingId: booking.id,
         },
       });
+    }
+
+    if (booking.calendarEventId) {
+      const user = await tx.user.findUnique({ where: { id: booking.userId } });
+      if (user?.googleAccessToken) {
+        try {
+          await deleteCalendarEvent(user.googleAccessToken, booking.calendarEventId);
+        } catch {
+          // best-effort
+        }
+      }
     }
 
     return { booking, outcome };
