@@ -22,27 +22,27 @@ const floatingAnimation = {
 
 export function DockNav({ items }: { items: DockItem[] }) {
   return (
-    <div className="pointer-events-none fixed bottom-3 left-0 right-0 z-40 flex justify-center px-4">
+    <div className="pointer-events-none fixed bottom-3 left-1/2 z-40 -translate-x-1/2">
       <motion.div
         initial="initial"
         animate="animate"
         variants={floatingAnimation}
-        className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/10 bg-slate-900/90 p-1.5 shadow-xl backdrop-blur-lg"
+        className="pointer-events-auto flex items-center gap-1 rounded-full border border-white/10 bg-slate-900/90 p-2 shadow-xl backdrop-blur-lg"
       >
         {items.map((item) => (
           <Link key={item.href} href={item.href} aria-label={item.label}>
             <motion.div
-              whileHover={{ scale: 1.08, y: -2 }}
-              whileTap={{ scale: 0.94 }}
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.95 }}
               className={clsx(
-                "flex items-center gap-1.5 rounded-full px-3 py-2 transition-colors",
-                item.active ? "bg-teal-500 text-white" : "text-white/60 hover:text-white",
+                "group relative flex items-center justify-center rounded-full p-3 transition-colors",
+                item.active ? "bg-teal-500 text-white" : "text-white/60 hover:bg-white/10 hover:text-white",
               )}
             >
-              <span className="h-[18px] w-[18px] flex-shrink-0 [&>svg]:h-full [&>svg]:w-full">{item.icon}</span>
-              {item.active && (
-                <span className="text-[11px] font-medium leading-none">{item.label}</span>
-              )}
+              <span className="h-5 w-5 flex-shrink-0 [&>svg]:h-full [&>svg]:w-full">{item.icon}</span>
+              <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+                {item.label}
+              </span>
             </motion.div>
           </Link>
         ))}
