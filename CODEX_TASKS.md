@@ -406,9 +406,78 @@ fake "cycle" over a single repeated image. At minimum, drop the zoom
 (`group-hover:scale-105`) even if you can't do real cycling yet, since the
 owner was explicit that zoom is the wrong effect.
 
-## NOT your tasks (Claude's lane this round — do not touch these files)
+## Round 3 — gym detail page restructure + gym-level subscriptions
 
-Nothing left in this lane as of this update - the owner moved every
+The owner sent a hand-drawn wireframe after seeing your round-1 work (photo
+carousel, info block, reviews) land. Good news: you already built the pieces
+needed (`GymPhotoCarousel`, `GymDetailsInfo`, `GymReviews`) - this is mostly
+about *layout*, not new components from scratch, plus one real new feature.
+
+### 13. Two-column gym detail layout
+
+The wireframe: a **left column** stacking, top to bottom, Photos → Info →
+Reviews (your existing `GymPhotoCarousel`, `GymDetailsInfo`, `GymReviews` -
+just re-stack them vertically in one column instead of the current photo+info
+side-by-side row with reviews presumably below full-width). A **right column**
+(wider - the wireframe gives it more horizontal space than the left) holds
+booking: a row of 7 day ovals at the top (this is your existing day-strip,
+just moved into this column instead of spanning full width above everything),
+and below it a **grid of slot cards** (roughly 2 columns, several rows in the
+sketch - not the current single-column vertical list). Two-column only above
+a reasonable breakpoint (`sm:` or `md:`); stack to one column on narrow
+mobile, left content first, booking panel below it - use your judgment on
+where "narrow" starts, doesn't need to be pixel-exact to the wireframe.
+
+Rework the slot rendering (the drop-in wheel-picker cards and the scheduled
+class-list cards you already have) into that grid-card format for the right
+column - each card compact (time, sport/class name, the "fits your schedule"
+tag when applicable), tappable to open the existing `BookingConfirmModal`.
+The drop-in `WheelPicker` interaction can stay as-is for `sport === "gym"`
+activities (it's Claude's component, don't edit `components/WheelPicker.tsx`
+itself, just call it from wherever you land the grid) - everything else
+becomes grid cards instead of the current stacked list.
+
+### 14. Gym-level long-term subscriptions (not every gym has this)
+
+New feature, owner's words: "some gyms, not all" offer 1/3/6/12-month
+subscriptions instead of (or alongside) pay-per-credit booking. In the
+wireframe this is a tab/toggle at the top of the right column, next to
+wherever "Slots" is labeled - switching it shows subscription duration
+options **as rows** (a vertical list, explicitly not the horizontal
+gradient-scroll cards style used on `app/wallet/page.tsx` for credit
+top-ups - visually distinct from that, still matching the app's teal/rounded
+look, not a totally different design language).
+
+Schema (additive, same caution as always - check for concurrent schema edits
+before `db push`):
+```prisma
+model SubscriptionPlan {
+  id        String @id @default(cuid())
+  gymId     String
+  gym       Gym    @relation(fields: [gymId], references: [id])
+  months    Int
+  price     Int
+  discountPct Int @default(0)
+}
+```
+Add `offersSubscription Boolean @default(false)` and
+`subscriptionPlans SubscriptionPlan[]` to `Gym`. In seed data, turn this on
+for maybe a third of gyms (random or every 3rd by index, your call) with 4
+rows each (1/3/6/12 months) - price in won is fine here specifically, this is
+a real-money purchase screen exactly like the wallet top-up cards, not a
+booking-credits context, so the "no won in the UI" rule from round 1 doesn't
+apply to this screen. Give longer terms a modest discount (`discountPct`)
+so 12mo isn't literally 12x the 1mo price - your judgment on the curve, keep
+it plausible.
+
+The tab only renders/is clickable when `gym.offersSubscription` is true -
+gyms without it just show the normal slots grid, no tab visible at all (not
+a disabled tab, just absent). Purchasing a subscription: keep it simple,
+doesn't need to integrate with the credits/wallet system - a confirm step
+similar to `BookingConfirmModal`'s pattern is fine, this doesn't need to be
+wired into real payment.
+
+i18n as usual, both locale files, no emojis, no code comments.
 remaining round-1 item to you (tasks 10-12 above). Claude is stepping back to
 avoid duplicate work. If that changes, this section will say so.
 - `components/icons/SportIcons.tsx` (mid-fix: crossfit and tennis icons)
