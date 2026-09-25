@@ -30,6 +30,7 @@ type Messages = {
     enjoy: string;
     calendarAdded: string;
     failed: string;
+    overlapError: string;
   };
 };
 
@@ -41,6 +42,7 @@ export function BookingConfirmModal({
   onBooked,
 }: BookingConfirmModalProps) {
   const [state, setState] = useState<"confirm" | "loading" | "success" | "error">("confirm");
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const t = useMessages<Messages>();
 
   const balanceAfter = creditBalance - classSlot.creditCost;
@@ -54,7 +56,11 @@ export function BookingConfirmModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, classSlotId: classSlot.id }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setErrorCode(data.error ?? null);
+        throw new Error();
+      }
       setState("success");
       setTimeout(() => {
         onBooked();
@@ -103,7 +109,7 @@ export function BookingConfirmModal({
 
             {state === "error" && (
               <p className="mt-2 text-xs text-red-500">
-                {t.booking.failed}
+                {errorCode === "SLOT_OVERLAP" ? t.booking.overlapError : t.booking.failed}
               </p>
             )}
 

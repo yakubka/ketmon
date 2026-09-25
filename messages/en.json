@@ -90,7 +90,8 @@
     "booked": "Booked",
     "enjoy": "Enjoy your class",
     "calendarAdded": "Added to Google Calendar",
-    "failed": "Booking failed. Please try again."
+    "failed": "Booking failed. Please try again.",
+    "overlapError": "You already have a booking at this time"
   },
   "myBookings": {
     "title": "My Bookings",

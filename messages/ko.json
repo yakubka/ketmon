@@ -90,7 +90,8 @@
     "booked": "예약 완료",
     "enjoy": "수업을 즐기세요",
     "calendarAdded": "Google 캘린더에 추가됨",
-    "failed": "예약에 실패했습니다. 다시 시도해주세요."
+    "failed": "예약에 실패했습니다. 다시 시도해주세요.",
+    "overlapError": "이미 같은 시간에 예약이 있어요"
   },
   "myBookings": {
     "title": "내 예약",
