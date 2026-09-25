@@ -52,7 +52,7 @@
     "pickTime": "시간 선택",
     "classes": "클래스",
     "address": "주소",
-    "closesAt": "마감",
+    "openHours": "영업시간",
     "trainer": "트레이너 이용 가능",
     "trainerFee": "크레딧",
     "parking": "주차 가능",
@@ -62,7 +62,8 @@
     "credits": "크레딧",
     "noClassesOnDay": "이 날짜에는 클래스가 없습니다",
     "slotsTab": "예약",
-    "subscribeTab": "구독"
+    "subscribeTab": "구독",
+    "sessions": "개 시간대"
   },
   "reviews": {
     "title": "후기",

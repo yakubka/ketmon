@@ -52,7 +52,7 @@
     "pickTime": "Pick a time",
     "classes": "Classes",
     "address": "Address",
-    "closesAt": "Closes",
+    "openHours": "Open",
     "trainer": "Trainer available",
     "trainerFee": "credits",
     "parking": "Parking available",
@@ -62,7 +62,8 @@
     "credits": "credits",
     "noClassesOnDay": "No classes on this day",
     "slotsTab": "Slots",
-    "subscribeTab": "Subscribe"
+    "subscribeTab": "Subscribe",
+    "sessions": "sessions available"
   },
   "reviews": {
     "title": "Reviews",

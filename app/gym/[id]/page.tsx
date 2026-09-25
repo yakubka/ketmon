@@ -49,6 +49,7 @@ type Gym = {
   address: string | null;
   imageUrl: string | null;
   images: string[];
+  opensAt: string | null;
   closesAt: string | null;
   hasTrainer: boolean;
   trainerFee: number | null;
@@ -76,6 +77,7 @@ type Messages = {
     noClassesOnDay: string;
     slotsTab: string;
     subscribeTab: string;
+    sessions: string;
   };
 };
 
@@ -168,17 +170,19 @@ export default function GymDetailPage() {
   }
 
   const dropInActivities = gym.activities.filter((a) => a.sport === "gym" && a.slots.length > 0);
-  const classActivities = gym.activities.filter((a) => a.sport !== "gym");
+  const classActivities = gym.activities
+    .filter((a) => a.sport !== "gym" && a.slots.length > 0)
+    .map((a) => ({
+      ...a,
+      slots: [...a.slots].sort((x, y) => {
+        if (!preferredTimeBand) return 0;
+        const xFits = bandForHour(new Date(x.startTime).getHours()) === preferredTimeBand ? 1 : 0;
+        const yFits = bandForHour(new Date(y.startTime).getHours()) === preferredTimeBand ? 1 : 0;
+        return yFits - xFits;
+      }),
+    }));
   const gymImages = gym.images.length > 0 ? gym.images : gym.imageUrl ? [gym.imageUrl] : [];
-
-  const classSlots: FlatSlot[] = classActivities
-    .flatMap((a) => a.slots.map((s) => ({ ...s, activityName: a.name })))
-    .sort((a, b) => {
-      if (!preferredTimeBand) return 0;
-      const aFits = bandForHour(new Date(a.startTime).getHours()) === preferredTimeBand ? 1 : 0;
-      const bFits = bandForHour(new Date(b.startTime).getHours()) === preferredTimeBand ? 1 : 0;
-      return bFits - aFits;
-    });
+  const WHEEL_THRESHOLD = 3;
 
   const showingSubscriptions = gym.offersSubscription && tab === "subscribe";
 
@@ -206,6 +210,7 @@ export default function GymDetailPage() {
 
           <GymDetailsInfo
             address={gym.address}
+            opensAt={gym.opensAt}
             closesAt={gym.closesAt}
             hasTrainer={gym.hasTrainer}
             trainerFee={gym.trainerFee}
@@ -262,10 +267,10 @@ export default function GymDetailPage() {
 
               <p className="mb-4 text-xs text-slate-400">{t.detail.cancelPolicy}</p>
 
-              {dropInActivities.length === 0 && classSlots.length === 0 ? (
+              {dropInActivities.length === 0 && classActivities.length === 0 ? (
                 <p className="py-10 text-center text-sm text-slate-400">{t.detail.noClassesOnDay}</p>
               ) : (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-5">
                   {dropInActivities.map((activity) => {
                     const available = activity.slots.filter((s) => s.booked < s.capacity);
                     const options = available.map((s) => ({
@@ -274,62 +279,100 @@ export default function GymDetailPage() {
                     }));
 
                     return (
-                      <Card key={activity.id} className="flex flex-col items-center gap-2 p-3 text-center">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
-                          <SportIcon sport={activity.sport} className="h-4 w-4" />
+                      <div key={activity.id}>
+                        <div className="mb-2 flex items-center gap-1.5">
+                          <SportIcon sport={activity.sport} className="h-3.5 w-3.5 text-teal-600" />
+                          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{activity.name}</p>
                         </div>
-                        <p className="line-clamp-1 text-xs font-semibold text-slate-900">{activity.name}</p>
-                        <p className="text-[10px] text-slate-400">{t.detail.dropIn}</p>
-                        {options.length > 0 ? (
-                          <WheelPicker
-                            options={options}
-                            value=""
-                            label={t.detail.pickTime}
-                            onChange={(value) => {
-                              const slot = available.find((s) => s.id === value);
-                              if (slot) setBookingSlot({ ...slot, activityName: activity.name });
-                            }}
-                          />
-                        ) : (
-                          <span className="text-[10px] text-slate-300">{t.detail.full}</span>
-                        )}
-                      </Card>
+                        <Card className="flex items-center justify-between gap-3 p-3">
+                          <span className="text-xs text-slate-500">{t.detail.dropIn}</span>
+                          {options.length > 0 ? (
+                            <WheelPicker
+                              options={options}
+                              value=""
+                              label={t.detail.pickTime}
+                              onChange={(value) => {
+                                const slot = available.find((s) => s.id === value);
+                                if (slot) setBookingSlot({ ...slot, activityName: activity.name });
+                              }}
+                            />
+                          ) : (
+                            <span className="text-xs text-slate-300">{t.detail.full}</span>
+                          )}
+                        </Card>
+                      </div>
                     );
                   })}
 
-                  {classSlots.map((slot) => {
-                    const time = new Date(slot.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-                    const full = slot.booked >= slot.capacity;
-                    const fits = preferredTimeBand ? bandForHour(new Date(slot.startTime).getHours()) === preferredTimeBand : false;
+                  {classActivities.map((activity) => {
+                    const useWheel = activity.slots.length > WHEEL_THRESHOLD;
+                    const available = activity.slots.filter((s) => s.booked < s.capacity);
+                    const options = available.map((s) => ({
+                      value: s.id,
+                      label: new Date(s.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                    }));
 
                     return (
-                      <Card key={slot.id} className="flex flex-col gap-2 p-3">
-                        <div>
-                          <p className="line-clamp-1 text-xs font-semibold text-slate-900">{slot.activityName}</p>
-                          <p className="text-[10px] text-slate-500">{time}</p>
+                      <div key={activity.id}>
+                        <div className="mb-2 flex items-center gap-1.5">
+                          <SportIcon sport={activity.sport} className="h-3.5 w-3.5 text-teal-600" />
+                          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{activity.name}</p>
                         </div>
-                        <div className="flex flex-wrap items-center gap-1">
-                          <Badge variant={slot.timeBand} className="!text-[9px]">{t.timeBand[slot.timeBand]}</Badge>
-                          {fits && (
-                            <span className="rounded-full bg-teal-50 px-1.5 py-0.5 text-[9px] font-semibold text-teal-600">
-                              {t.detail.fitsSchedule}
-                            </span>
-                          )}
-                        </div>
-                        <div className="mt-auto flex items-center justify-between pt-1">
-                          <span className="text-xs font-semibold text-brand-700">
-                            {slot.creditCost} {t.detail.credits}
-                          </span>
-                          <Button
-                            variant={full ? "ghost" : "primary"}
-                            disabled={full}
-                            className="px-2.5 py-1 text-[10px]"
-                            onClick={() => !full && setBookingSlot(slot)}
-                          >
-                            {full ? t.detail.full : t.detail.bookButton}
-                          </Button>
-                        </div>
-                      </Card>
+
+                        {useWheel ? (
+                          <Card className="flex items-center justify-between gap-3 p-3">
+                            <span className="text-xs text-slate-500">{activity.slots.length} {t.detail.sessions}</span>
+                            {options.length > 0 ? (
+                              <WheelPicker
+                                options={options}
+                                value=""
+                                label={t.detail.pickTime}
+                                onChange={(value) => {
+                                  const slot = available.find((s) => s.id === value);
+                                  if (slot) setBookingSlot({ ...slot, activityName: activity.name });
+                                }}
+                              />
+                            ) : (
+                              <span className="text-xs text-slate-300">{t.detail.full}</span>
+                            )}
+                          </Card>
+                        ) : (
+                          <div className="grid grid-cols-2 gap-3">
+                            {activity.slots.map((slot) => {
+                              const time = new Date(slot.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                              const full = slot.booked >= slot.capacity;
+                              const fits = preferredTimeBand ? bandForHour(new Date(slot.startTime).getHours()) === preferredTimeBand : false;
+
+                              return (
+                                <Card key={slot.id} className="flex flex-col gap-2 p-3">
+                                  <p className="text-xs font-semibold text-slate-900">{time}</p>
+                                  <div className="flex flex-wrap items-center gap-1">
+                                    <Badge variant={slot.timeBand} className="!text-[9px]">{t.timeBand[slot.timeBand]}</Badge>
+                                    {fits && (
+                                      <span className="rounded-full bg-teal-50 px-1.5 py-0.5 text-[9px] font-semibold text-teal-600">
+                                        {t.detail.fitsSchedule}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="mt-auto flex items-center justify-between pt-1">
+                                    <span className="text-xs font-semibold text-brand-700">
+                                      {slot.creditCost} {t.detail.credits}
+                                    </span>
+                                    <Button
+                                      variant={full ? "ghost" : "primary"}
+                                      disabled={full}
+                                      className="px-2.5 py-1 text-[10px]"
+                                      onClick={() => !full && setBookingSlot({ ...slot, activityName: activity.name })}
+                                    >
+                                      {full ? t.detail.full : t.detail.bookButton}
+                                    </Button>
+                                  </div>
+                                </Card>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
