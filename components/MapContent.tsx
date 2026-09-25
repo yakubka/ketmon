@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, ZoomControl } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from "react-leaflet";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import "leaflet/dist/leaflet.css";
@@ -36,12 +36,6 @@ type Gym = {
   imageUrl: string | null;
 };
 
-type RouteInfo = {
-  coords: [number, number][];
-  distanceKm: number;
-  durationMin: number;
-};
-
 function UserLocationMarker({ onLocation }: { onLocation: (pos: [number, number]) => void }) {
   const map = useMap();
 
@@ -59,44 +53,8 @@ function UserLocationMarker({ onLocation }: { onLocation: (pos: [number, number]
   return null;
 }
 
-async function fetchRoute(from: [number, number], to: [number, number]): Promise<RouteInfo | null> {
-  try {
-    const url = `https://router.project-osrm.org/route/v1/foot/${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=geojson`;
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (!data.routes?.length) return null;
-
-    const route = data.routes[0];
-    const coords = route.geometry.coordinates.map(
-      (c: [number, number]) => [c[1], c[0]] as [number, number],
-    );
-    return {
-      coords,
-      distanceKm: Math.round((route.distance / 1000) * 10) / 10,
-      durationMin: Math.round(route.duration / 60),
-    };
-  } catch {
-    return null;
-  }
-}
-
 export default function MapContent({ gyms }: { gyms: Gym[] }) {
   const [userPos, setUserPos] = useState<[number, number] | null>(null);
-  const [route, setRoute] = useState<RouteInfo | null>(null);
-  const [routeTarget, setRouteTarget] = useState<string | null>(null);
-
-  async function handleRoute(gym: Gym) {
-    if (!userPos) return;
-    if (routeTarget === gym.id) {
-      setRoute(null);
-      setRouteTarget(null);
-      return;
-    }
-    const r = await fetchRoute(userPos, [gym.lat, gym.lng]);
-    setRoute(r);
-    setRouteTarget(gym.id);
-  }
 
   return (
     <MapContainer
@@ -118,7 +76,6 @@ export default function MapContent({ gyms }: { gyms: Gym[] }) {
           </Popup>
         </Marker>
       )}
-      {route && <Polyline positions={route.coords} color="#14b8a6" weight={4} opacity={0.8} />}
       {gyms.map((gym) => (
         <Marker key={gym.id} position={[gym.lat, gym.lng]} icon={icon}>
           <Popup>
@@ -134,19 +91,6 @@ export default function MapContent({ gyms }: { gyms: Gym[] }) {
                 <StarIcon className="h-3 w-3 text-amber-400" />
                 {gym.rating.toFixed(1)}
               </p>
-              {userPos && (
-                <button
-                  onClick={() => handleRoute(gym)}
-                  className="mt-1 rounded bg-teal-500 px-2 py-0.5 text-xs text-white"
-                >
-                  {routeTarget === gym.id ? "Hide Route" : "Route"}
-                </button>
-              )}
-              {route && routeTarget === gym.id && (
-                <p className="mt-1 text-xs text-slate-500">
-                  {route.distanceKm} km, ~{route.durationMin} min walk
-                </p>
-              )}
               <Link
                 href={`/gym/${gym.id}`}
                 className="mt-1 inline-block text-brand-600 underline"

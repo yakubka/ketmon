@@ -32,10 +32,7 @@
   },
   "map": {
     "details": "Details",
-    "route": "Route",
-    "hideRoute": "Hide route",
-    "you": "You",
-    "walkInfo": "{distance} km, ~{duration} min walk"
+    "you": "You"
   },
   "timeBand": {
     "OFF_PEAK": "Off-peak",
