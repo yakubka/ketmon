@@ -24,6 +24,8 @@ type Messages = {
     cancel: string;
     subscribed: string;
     enjoy: string;
+    failed: string;
+    alreadySubscribed: string;
   };
 };
 
@@ -39,6 +41,7 @@ export function SubscriptionPlans({
   const [selected, setSelected] = useState<Plan | null>(null);
   const [confirmed, setConfirmed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const t = useMessages<Messages>();
 
   if (!t || plans.length === 0) return null;
@@ -46,12 +49,18 @@ export function SubscriptionPlans({
   async function handleConfirm() {
     if (!selected || !userId) return;
     setSubmitting(true);
+    setErrorCode(null);
     try {
-      await fetch("/api/subscriptions", {
+      const res = await fetch("/api/subscriptions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, planId: selected.id }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setErrorCode(data.error ?? "FAILED");
+        return;
+      }
       setConfirmed(true);
     } finally {
       setSubmitting(false);
@@ -99,6 +108,7 @@ export function SubscriptionPlans({
               onClick={() => {
                 setSelected(null);
                 setConfirmed(false);
+                setErrorCode(null);
               }}
               aria-label={t.subscription.cancel}
               className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600"
@@ -120,6 +130,11 @@ export function SubscriptionPlans({
                 </p>
                 <p className="mt-4 text-2xl font-bold text-slate-900">&#8361;{selected.price.toLocaleString()}</p>
                 <p className="mt-1 text-xs text-slate-400">{t.subscription.confirmBody}</p>
+                {errorCode && (
+                  <p className="mt-2 text-xs text-red-500">
+                    {errorCode === "ALREADY_SUBSCRIBED" ? t.subscription.alreadySubscribed : t.subscription.failed}
+                  </p>
+                )}
                 <div className="mt-6 flex gap-3">
                   <Button variant="ghost" className="flex-1" onClick={() => setSelected(null)}>
                     {t.subscription.cancel}

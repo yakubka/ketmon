@@ -77,7 +77,9 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "subscribed": "Subscribed",
-    "enjoy": "Enjoy unlimited access"
+    "enjoy": "Enjoy unlimited access",
+    "failed": "Subscription failed. Please try again.",
+    "alreadySubscribed": "You already have an active subscription at this gym"
   },
   "booking": {
     "confirmTitle": "Confirm booking",

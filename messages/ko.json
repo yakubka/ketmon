@@ -77,7 +77,9 @@
     "confirm": "확인",
     "cancel": "취소",
     "subscribed": "구독 완료",
-    "enjoy": "무제한으로 이용해보세요"
+    "enjoy": "무제한으로 이용해보세요",
+    "failed": "구독에 실패했습니다. 다시 시도해주세요.",
+    "alreadySubscribed": "이미 이 체육관에 활성화된 구독이 있어요"
   },
   "booking": {
     "confirmTitle": "예약 확인",

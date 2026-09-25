@@ -11,8 +11,8 @@ type WheelPickerProps = {
   label: string;
 };
 
-const ITEM_H = 40;
-const VISIBLE = 3;
+const ITEM_H = 48;
+const VISIBLE = 5;
 const HALF = Math.floor(VISIBLE / 2);
 const HEIGHT = ITEM_H * VISIBLE;
 const PAD = ITEM_H * HALF;
@@ -73,16 +73,25 @@ export function WheelPicker({ options, value, onChange, label }: WheelPickerProp
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" onClick={() => setOpen(false)} />
 
-          <div className="relative mb-4 w-full max-w-[240px] animate-slide-up rounded-2xl bg-white pb-4 shadow-xl">
-            <div className="flex items-center justify-between px-3 py-2.5">
-              <button onClick={() => setOpen(false)} className="text-xs text-slate-400">
+          <div className="relative w-full max-w-[320px] animate-scale-in rounded-2xl bg-white pb-5 shadow-xl">
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close"
+              className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+            <div className="flex items-center justify-between px-4 py-3.5">
+              <button onClick={() => setOpen(false)} className="text-sm text-slate-400">
                 Cancel
               </button>
-              <span className="text-xs font-semibold text-slate-800">{label}</span>
-              <button onClick={confirm} className="text-xs font-semibold text-teal-500">
+              <span className="text-sm font-semibold text-slate-800">{label}</span>
+              <button onClick={confirm} className="text-sm font-semibold text-teal-500">
                 Done
               </button>
             </div>
@@ -131,7 +140,7 @@ export function WheelPicker({ options, value, onChange, label }: WheelPickerProp
                       }}
                     >
                       <span
-                        className={`text-base transition-colors ${dist === 0 ? "font-semibold text-slate-900" : "text-slate-600"}`}
+                        className={`text-lg transition-colors ${dist === 0 ? "font-semibold text-slate-900" : "text-slate-600"}`}
                       >
                         {opt.label}
                       </span>

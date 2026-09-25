@@ -31,6 +31,13 @@ export async function POST(req: NextRequest) {
   try {
     const plan = await prisma.subscriptionPlan.findUniqueOrThrow({ where: { id: planId } });
 
+    const existing = await prisma.userSubscription.findFirst({
+      where: { userId, gymId: plan.gymId, expiresAt: { gte: new Date() } },
+    });
+    if (existing) {
+      return NextResponse.json({ error: "ALREADY_SUBSCRIBED" }, { status: 409 });
+    }
+
     const expiresAt = new Date();
     expiresAt.setMonth(expiresAt.getMonth() + plan.months);
 
