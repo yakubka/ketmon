@@ -80,6 +80,13 @@ const GYM_IMAGES = [
   "https://images.unsplash.com/photo-1771947550396-1fb9b5adb698?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1574909524182-c557eb865c5b?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1754257319747-df51c384c0fa?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1747240549807-fc3962949818?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1545612036-2872840642dc?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1759819599208-0b79a7f3f347?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1495555775484-97f7c56a7ba9?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1761971975769-97e598bf526b?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1721394749382-223a18ce8bb9?w=400&h=300&fit=crop",
 ];
 
 const FALLBACK_GYMS = [
@@ -113,6 +120,9 @@ const FALLBACK_GYMS = [
   { name: "동춘 무술도장", lat: 37.4010, lng: 126.6850, pop: 28, area: "동춘동" },
   { name: "송도 요가하우스", lat: 37.3800, lng: 126.6620, pop: 82, area: "송도동" },
   { name: "학익 복싱짐", lat: 37.4360, lng: 126.6680, pop: 36, area: "학익동" },
+  { name: "연수 프리미엄짐", lat: 37.4115, lng: 126.6795, pop: 88, area: "연수동" },
+  { name: "청학 스포츠클럽", lat: 37.4075, lng: 126.6730, pop: 91, area: "청학동" },
+  { name: "송도 크로스핏존", lat: 37.3845, lng: 126.6590, pop: 87, area: "송도동" },
 ];
 
 async function fetchOverpass(): Promise<Array<{ name: string; lat: number; lng: number; address?: string; sport?: string }>> {
@@ -193,6 +203,7 @@ function gymImages(index: number) {
 function gymAmenities(index: number) {
   const hasTrainer = index % 5 < 2;
   return {
+    opensAt: ["06:00", "06:30", "07:00"][index % 3],
     closesAt: ["21:00", "22:00", "22:00", "23:00"][index % 4],
     hasTrainer,
     trainerFee: hasTrainer ? 3 + (index % 3) : null,
@@ -265,7 +276,7 @@ async function main() {
       const v = osmVenues[i];
       const pop = Math.floor(Math.random() * 100);
       const tier = pickTier(pop);
-      const allowsPeak = tier === VenueTier.NEIGHBORHOOD || pop < 40;
+      const allowsPeak = tier !== VenueTier.NEIGHBORHOOD;
       const images = gymImages(i);
 
       const area = v.address?.split(" ").find((w) => w.endsWith("동") || w.endsWith("구")) ?? null;
@@ -336,7 +347,7 @@ async function main() {
     for (let i = 0; i < FALLBACK_GYMS.length; i++) {
       const g = FALLBACK_GYMS[i];
       const tier = pickTier(g.pop);
-      const allowsPeak = tier === VenueTier.NEIGHBORHOOD || g.pop < 40;
+      const allowsPeak = tier !== VenueTier.NEIGHBORHOOD;
       const images = gymImages(i);
 
       const gym = await prisma.gym.create({
