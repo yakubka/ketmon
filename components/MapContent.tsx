@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, ZoomControl } from "react-leaflet";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import "leaflet/dist/leaflet.css";
@@ -102,8 +102,10 @@ export default function MapContent({ gyms }: { gyms: Gym[] }) {
     <MapContainer
       center={[37.4106, 126.6784]}
       zoom={14}
+      zoomControl={false}
       className="h-full w-full"
     >
+      <ZoomControl position="bottomright" />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -40,10 +40,12 @@ export default function MapPage() {
 
   return (
     <div className="relative h-screen w-full">
-      <div className="absolute left-4 top-4 z-[1000]">
-        <Link href="/home">
-          <Button variant="secondary" className="text-xs">
-            {t?.home.toggleList ?? "List"}
+      <div className="absolute right-4 top-4 z-[1000]">
+        <Link href="/home" aria-label={t?.home.toggleList ?? "List"}>
+          <Button variant="secondary" className="flex h-11 w-11 items-center justify-center !rounded-full !p-0 shadow-lg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-5 w-5" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+            </svg>
           </Button>
         </Link>
       </div>
