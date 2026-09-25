@@ -68,6 +68,7 @@ type Messages = {
     expiresOn: string;
     noPlan: string;
     spending: string;
+    spendingSubtitle: string;
     totalSpent: string;
     noSpending: string;
     starter: string;
@@ -205,194 +206,10 @@ export default function WalletPage() {
     : 0;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6 pb-24">
+    <div className="mx-auto max-w-5xl px-4 py-6 pb-24 lg:max-w-none lg:px-10 xl:px-16">
       <h1 className="text-lg font-bold text-slate-900">{t.wallet.title}</h1>
 
-      <div className="mt-4 grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-        <div>
-          <section>
-            <h2 className="text-sm font-semibold text-slate-500">{t.wallet.buyCredits}</h2>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              {PLANS.map((plan) => {
-                const visits = Math.round(plan.credits / 4);
-                return (
-                  <div
-                    key={plan.credits}
-                    className={`relative min-w-0 overflow-hidden rounded-2xl shadow-lg transition-transform active:scale-[0.97] ${plan.popular ? "ring-2 ring-fuchsia-400" : ""}`}
-                  >
-                    {plan.popular && (
-                      <span className="absolute right-1.5 top-1.5 z-10 rounded-full bg-white/90 px-1 py-0.5 text-[7px] font-semibold leading-none text-fuchsia-600 shadow-sm backdrop-blur-sm">
-                        {t.wallet.popular}
-                      </span>
-                    )}
-                    <img
-                      src={plan.image}
-                      alt={t.wallet[plan.labelKey]}
-                      className="h-20 w-full object-cover object-left-top"
-                    />
-                    <div className="bg-white p-2.5">
-                      <p className="text-[9px] font-semibold uppercase tracking-wide text-slate-400">{t.wallet[plan.labelKey]}</p>
-                      <p className="mt-0.5 text-xs font-semibold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
-                      <p className="mt-0.5 truncate text-[10px] text-slate-400">{t.wallet.credits} · {t.wallet.days.replace("{count}", String(plan.days))}</p>
-                      <p className="truncate text-[10px] text-slate-400">{t.wallet.visits.replace("{count}", String(visits))}</p>
-                      <Button
-                        variant="primary"
-                        className="mt-2 w-full !bg-slate-900 px-1 text-[10px] hover:!bg-slate-800"
-                        onClick={() => handleTopUp(plan.credits)}
-                        disabled={topUpLoading === plan.credits}
-                      >
-                        {topUpLoading === plan.credits ? "..." : t.wallet.topUp}
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          {spending.length > 0 && (
-            <section className="mt-6">
-              <h2 className="text-sm font-semibold text-slate-500">{t.wallet.spending}</h2>
-              <Card className="mt-3 p-4">
-                <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-48">
-                  <PieChart margin={{ top: -10 }}>
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent hideLabel />}
-                    />
-                    <Pie
-                      data={chartData}
-                      dataKey="credits"
-                      nameKey="sport"
-                      innerRadius={55}
-                      strokeWidth={40}
-                      startAngle={90}
-                      endAngle={-270}
-                      labelLine={false}
-                      label={({ cx, cy, midAngle = 0, innerRadius = 0, outerRadius = 0, percent = 0 }) => {
-                        if (percent < 0.06) return null;
-                        const RADIAN = Math.PI / 180;
-                        const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
-                        const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                        const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                        return (
-                          <text
-                            x={x}
-                            y={y}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="fill-white text-[10px] font-semibold"
-                          >
-                            {Math.round(percent * 100)}%
-                          </text>
-                        );
-                      }}
-                    >
-                      <Label
-                        content={({ viewBox }) => {
-                          if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                            return (
-                              <text
-                                x={viewBox.cx}
-                                y={viewBox.cy}
-                                textAnchor="middle"
-                                dominantBaseline="middle"
-                              >
-                                <tspan
-                                  x={viewBox.cx}
-                                  y={(viewBox.cy || 0) - 10}
-                                  className="fill-slate-400 text-xs"
-                                >
-                                  {t.wallet.totalSpent}
-                                </tspan>
-                                <tspan
-                                  x={viewBox.cx}
-                                  y={(viewBox.cy || 0) + 14}
-                                  className="fill-slate-900 text-lg font-semibold"
-                                >
-                                  {totalSpent}
-                                </tspan>
-                              </text>
-                            );
-                          }
-                        }}
-                      />
-                    </Pie>
-                  </PieChart>
-                </ChartContainer>
-                <div className="mt-4 flex flex-col gap-2.5">
-                  {spending.map((item, i) => {
-                    const pct = totalSpent > 0 ? Math.round((item.credits / totalSpent) * 100) : 0;
-                    const color = SPORT_COLORS[i % SPORT_COLORS.length];
-                    return (
-                      <div key={item.sport} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full"
-                            style={{ backgroundColor: `${color}22` }}
-                          >
-                            <SportIcon sport={item.sport} className="h-3.5 w-3.5" />
-                          </div>
-                          <span className="text-sm text-slate-600">{formatSport(item.sport, locale)}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-slate-900">{item.credits}</span>
-                          <span
-                            className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                            style={{ backgroundColor: `${color}22`, color }}
-                          >
-                            {pct}%
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Card>
-            </section>
-          )}
-
-          <section className="mt-6">
-            <h2 className="text-sm font-semibold text-slate-500">{t.wallet.history}</h2>
-            {transactions.length === 0 && (
-              <p className="mt-3 text-center text-sm text-slate-400">{t.wallet.noTransactions}</p>
-            )}
-            <div className="mt-3 space-y-1">
-              {transactions.map((txn) => (
-                <div
-                  key={txn.id}
-                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 text-sm"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${txn.amount > 0 ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-500"}`}>
-                      {TYPE_ICONS[txn.type]}
-                    </div>
-                    <div>
-                      <span className="font-medium text-slate-700">
-                        {TYPE_LABELS[txn.type] ?? txn.type}
-                      </span>
-                      <p className="text-[11px] text-slate-400">
-                        {new Date(txn.createdAt).toLocaleDateString([], {
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                  <span
-                    className={`font-semibold ${txn.amount > 0 ? "text-emerald-600" : "text-red-500"}`}
-                  >
-                    {txn.amount > 0 ? "+" : ""}
-                    {txn.amount}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
+      <div className="mt-4 grid gap-6 lg:grid-cols-2 lg:gap-10">
         <div>
           <Card className="p-6">
             <div className="flex items-center justify-between">
@@ -471,6 +288,197 @@ export default function WalletPage() {
                 ))}
               </div>
             )}
+          </section>
+
+          <section className="mt-6">
+            <h2 className="text-sm font-semibold text-slate-500">{t.wallet.buyCredits}</h2>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {PLANS.map((plan) => {
+                const visits = Math.round(plan.credits / 4);
+                return (
+                  <div
+                    key={plan.credits}
+                    className={`relative min-w-0 overflow-hidden rounded-2xl shadow-lg transition-transform active:scale-[0.97] ${plan.popular ? "ring-2 ring-fuchsia-400" : ""}`}
+                  >
+                    {plan.popular && (
+                      <span className="absolute right-1.5 top-1.5 z-10 rounded-full bg-white/90 px-1 py-0.5 text-[7px] font-semibold leading-none text-fuchsia-600 shadow-sm backdrop-blur-sm">
+                        {t.wallet.popular}
+                      </span>
+                    )}
+                    <img
+                      src={plan.image}
+                      alt={t.wallet[plan.labelKey]}
+                      className="h-20 w-full object-cover object-left-top"
+                    />
+                    <div className="bg-white p-2.5">
+                      <p className="text-[9px] font-semibold uppercase tracking-wide text-slate-400">{t.wallet[plan.labelKey]}</p>
+                      <p className="mt-0.5 text-xs font-semibold text-slate-900">&#8361;{plan.price.toLocaleString()}</p>
+                      <p className="mt-0.5 truncate text-[10px] text-slate-400">{t.wallet.credits} · {t.wallet.days.replace("{count}", String(plan.days))}</p>
+                      <p className="truncate text-[10px] text-slate-400">{t.wallet.visits.replace("{count}", String(visits))}</p>
+                      <Button
+                        variant="primary"
+                        className="mt-2 w-full !bg-slate-900 px-1 text-[10px] hover:!bg-slate-800"
+                        onClick={() => handleTopUp(plan.credits)}
+                        disabled={topUpLoading === plan.credits}
+                      >
+                        {topUpLoading === plan.credits ? "..." : t.wallet.topUp}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+
+        <div>
+          <section>
+            <div className="flex items-baseline justify-between">
+              <h2 className="text-sm font-semibold text-slate-500">{t.wallet.spending}</h2>
+              <span className="text-xs text-slate-400">{t.wallet.spendingSubtitle}</span>
+            </div>
+            <Card className="mt-3 p-4">
+              {spending.length === 0 ? (
+                <p className="py-8 text-center text-sm text-slate-400">{t.wallet.noSpending}</p>
+              ) : (
+                <>
+                  <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-48">
+                    <PieChart margin={{ top: -10 }}>
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel />}
+                      />
+                      <Pie
+                        data={chartData}
+                        dataKey="credits"
+                        nameKey="sport"
+                        innerRadius={55}
+                        strokeWidth={40}
+                        startAngle={90}
+                        endAngle={-270}
+                        labelLine={false}
+                        label={({ cx, cy, midAngle = 0, innerRadius = 0, outerRadius = 0, percent = 0 }) => {
+                          if (percent < 0.06) return null;
+                          const RADIAN = Math.PI / 180;
+                          const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
+                          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                          return (
+                            <text
+                              x={x}
+                              y={y}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              className="fill-white text-[10px] font-semibold"
+                            >
+                              {Math.round(percent * 100)}%
+                            </text>
+                          );
+                        }}
+                      >
+                        <Label
+                          content={({ viewBox }) => {
+                            if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                              return (
+                                <text
+                                  x={viewBox.cx}
+                                  y={viewBox.cy}
+                                  textAnchor="middle"
+                                  dominantBaseline="middle"
+                                >
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={(viewBox.cy || 0) - 10}
+                                    className="fill-slate-400 text-xs"
+                                  >
+                                    {t.wallet.totalSpent}
+                                  </tspan>
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={(viewBox.cy || 0) + 14}
+                                    className="fill-slate-900 text-lg font-semibold"
+                                  >
+                                    {totalSpent}
+                                  </tspan>
+                                </text>
+                              );
+                            }
+                          }}
+                        />
+                      </Pie>
+                    </PieChart>
+                  </ChartContainer>
+                  <div className="mt-4 flex flex-col gap-2.5">
+                    {spending.map((item, i) => {
+                      const pct = totalSpent > 0 ? Math.round((item.credits / totalSpent) * 100) : 0;
+                      const color = SPORT_COLORS[i % SPORT_COLORS.length];
+                      return (
+                        <div key={item.sport} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full"
+                              style={{ backgroundColor: `${color}22` }}
+                            >
+                              <SportIcon sport={item.sport} className="h-3.5 w-3.5" />
+                            </div>
+                            <span className="text-sm text-slate-600">{formatSport(item.sport, locale)}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-slate-900">{item.credits}</span>
+                            <span
+                              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                              style={{ backgroundColor: `${color}22`, color }}
+                            >
+                              {pct}%
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </Card>
+          </section>
+
+          <section className="mt-6">
+            <h2 className="text-sm font-semibold text-slate-500">{t.wallet.history}</h2>
+            {transactions.length === 0 && (
+              <p className="mt-3 text-center text-sm text-slate-400">{t.wallet.noTransactions}</p>
+            )}
+            <div className="mt-3 max-h-[420px] space-y-1 overflow-y-auto pr-1">
+              {transactions.map((txn) => (
+                <div
+                  key={txn.id}
+                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 text-sm"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${txn.amount > 0 ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-500"}`}>
+                      {TYPE_ICONS[txn.type]}
+                    </div>
+                    <div>
+                      <span className="font-medium text-slate-700">
+                        {TYPE_LABELS[txn.type] ?? txn.type}
+                      </span>
+                      <p className="text-[11px] text-slate-400">
+                        {new Date(txn.createdAt).toLocaleDateString([], {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <span
+                    className={`font-semibold ${txn.amount > 0 ? "text-emerald-600" : "text-red-500"}`}
+                  >
+                    {txn.amount > 0 ? "+" : ""}
+                    {txn.amount}
+                  </span>
+                </div>
+              ))}
+            </div>
           </section>
         </div>
       </div>

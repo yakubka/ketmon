@@ -9,8 +9,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "missing userId" }, { status: 400 });
   }
 
+  const since = new Date();
+  since.setDate(since.getDate() - 30);
+
   const bookings = await prisma.booking.findMany({
-    where: { userId, status: { not: "CANCELLED" } },
+    where: {
+      userId,
+      status: { not: "CANCELLED" },
+      classSlot: { startTime: { gte: since } },
+    },
     include: {
       classSlot: {
         include: {
