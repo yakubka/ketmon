@@ -128,7 +128,9 @@
     "popular": "POPULAR",
     "expired": "Expired",
     "days": "{count}d",
-    "visits": "~{count} visits"
+    "visits": "~{count} visits",
+    "gymSubscriptions": "Gym subscriptions",
+    "noGymSubscriptions": "No gym subscriptions yet"
   },
   "profile": {
     "title": "Profile",

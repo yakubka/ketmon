@@ -243,7 +243,7 @@ export default function GymDetailPage() {
           )}
 
           {showingSubscriptions ? (
-            <SubscriptionPlans plans={gym.subscriptionPlans} gymName={gym.name} />
+            <SubscriptionPlans plans={gym.subscriptionPlans} gymName={gym.name} userId={userId} />
           ) : (
             <>
               <div className="mb-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>

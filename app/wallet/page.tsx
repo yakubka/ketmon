@@ -44,6 +44,14 @@ type SpendItem = {
   credits: number;
 };
 
+type GymSubscription = {
+  id: string;
+  gymName: string;
+  months: number;
+  price: number;
+  expiresAt: string;
+};
+
 type Messages = {
   wallet: {
     title: string;
@@ -69,6 +77,12 @@ type Messages = {
     expired: string;
     days: string;
     visits: string;
+    gymSubscriptions: string;
+    noGymSubscriptions: string;
+  };
+  subscription: {
+    month: string;
+    months: string;
   };
 };
 
@@ -96,6 +110,7 @@ export default function WalletPage() {
   const [planExpiresAt, setPlanExpiresAt] = useState<string | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [spending, setSpending] = useState<SpendItem[]>([]);
+  const [gymSubscriptions, setGymSubscriptions] = useState<GymSubscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [topUpLoading, setTopUpLoading] = useState<number | null>(null);
   const t = useMessages<Messages>();
@@ -115,11 +130,13 @@ export default function WalletPage() {
             return Promise.all([
               fetch(`/api/wallet/transactions?userId=${u.id}`).then((r) => r.json()),
               fetch(`/api/wallet/stats?userId=${u.id}`).then((r) => r.json()),
+              fetch(`/api/subscriptions?userId=${u.id}`).then((r) => r.json()),
             ]);
           })
-          .then(([txns, stats]) => {
+          .then(([txns, stats, subs]) => {
             setTransactions(txns);
             if (stats.spending) setSpending(stats.spending);
+            if (Array.isArray(subs)) setGymSubscriptions(subs);
             setLoading(false);
           });
       }
@@ -240,6 +257,35 @@ export default function WalletPage() {
           )}
         </div>
       </Card>
+
+      <section className="mt-6">
+        <h2 className="text-sm font-semibold text-slate-500">{t.wallet.gymSubscriptions}</h2>
+        {gymSubscriptions.length === 0 ? (
+          <p className="mt-3 text-center text-sm text-slate-400">{t.wallet.noGymSubscriptions}</p>
+        ) : (
+          <div className="mt-3 space-y-2">
+            {gymSubscriptions.map((sub) => (
+              <Card key={sub.id} className="flex items-center justify-between p-3.5">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{sub.gymName}</p>
+                  <p className="text-xs text-slate-500">
+                    {sub.months} {sub.months === 1 ? t.subscription.month : t.subscription.months} ·{" "}
+                    {t.wallet.expiresOn}{" "}
+                    {new Date(sub.expiresAt).toLocaleDateString([], {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+                <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-600">
+                  &#8361;{sub.price.toLocaleString()}
+                </span>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
 
       {spending.length > 0 && (
         <section className="mt-6">

@@ -128,7 +128,9 @@
     "popular": "인기",
     "expired": "만료됨",
     "days": "{count}일",
-    "visits": "약 {count}회 방문"
+    "visits": "약 {count}회 방문",
+    "gymSubscriptions": "시설 구독",
+    "noGymSubscriptions": "아직 구독 중인 시설이 없습니다"
   },
   "profile": {
     "title": "프로필",

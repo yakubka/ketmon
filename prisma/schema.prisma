@@ -55,6 +55,7 @@ model User {
   gyms                Gym[]
   bookings            Booking[]
   transactions        CreditTransaction[]
+  subscriptions       UserSubscription[]
   createdAt           DateTime @default(now())
 }
 
@@ -83,15 +84,31 @@ model Gym {
   slots              ClassSlot[]
   reviews            Review[]
   subscriptionPlans  SubscriptionPlan[]
+  subscriptions      UserSubscription[]
 }
 
 model SubscriptionPlan {
-  id          String @id @default(cuid())
-  gymId       String
-  gym         Gym    @relation(fields: [gymId], references: [id])
-  months      Int
-  price       Int
-  discountPct Int    @default(0)
+  id            String             @id @default(cuid())
+  gymId         String
+  gym           Gym                @relation(fields: [gymId], references: [id])
+  months        Int
+  price         Int
+  discountPct   Int                @default(0)
+  subscriptions UserSubscription[]
+}
+
+model UserSubscription {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  gymId     String
+  gym       Gym              @relation(fields: [gymId], references: [id])
+  planId    String
+  plan      SubscriptionPlan @relation(fields: [planId], references: [id])
+  months    Int
+  price     Int
+  startedAt DateTime         @default(now())
+  expiresAt DateTime
 }
 
 model Review {

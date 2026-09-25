@@ -27,12 +27,36 @@ type Messages = {
   };
 };
 
-export function SubscriptionPlans({ plans, gymName }: { plans: Plan[]; gymName: string }) {
+export function SubscriptionPlans({
+  plans,
+  gymName,
+  userId,
+}: {
+  plans: Plan[];
+  gymName: string;
+  userId: string | null;
+}) {
   const [selected, setSelected] = useState<Plan | null>(null);
   const [confirmed, setConfirmed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const t = useMessages<Messages>();
 
   if (!t || plans.length === 0) return null;
+
+  async function handleConfirm() {
+    if (!selected || !userId) return;
+    setSubmitting(true);
+    try {
+      await fetch("/api/subscriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, planId: selected.id }),
+      });
+      setConfirmed(true);
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="space-y-2.5">
@@ -70,7 +94,19 @@ export function SubscriptionPlans({ plans, gymName }: { plans: Plan[]; gymName: 
 
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6">
+          <div className="relative w-full max-w-sm rounded-2xl bg-white p-6">
+            <button
+              onClick={() => {
+                setSelected(null);
+                setConfirmed(false);
+              }}
+              aria-label={t.subscription.cancel}
+              className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
             {confirmed ? (
               <div className="text-center">
                 <p className="text-lg font-bold text-brand-600">{t.subscription.subscribed}</p>
@@ -88,7 +124,11 @@ export function SubscriptionPlans({ plans, gymName }: { plans: Plan[]; gymName: 
                   <Button variant="ghost" className="flex-1" onClick={() => setSelected(null)}>
                     {t.subscription.cancel}
                   </Button>
-                  <Button className="flex-1 !bg-teal-500 hover:!bg-teal-600" onClick={() => setConfirmed(true)}>
+                  <Button
+                    className="flex-1 !bg-teal-500 hover:!bg-teal-600"
+                    onClick={handleConfirm}
+                    disabled={submitting}
+                  >
                     {t.subscription.confirm}
                   </Button>
                 </div>
