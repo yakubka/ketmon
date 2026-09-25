@@ -67,6 +67,7 @@ model Gym {
   area               String?
   imageUrl           String?
   images             String[]           @default([])
+  opensAt            String?
   closesAt           String?
   hasTrainer         Boolean            @default(false)
   trainerFee         Int?

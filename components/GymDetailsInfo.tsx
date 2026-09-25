@@ -4,6 +4,7 @@ import { useMessages } from "@/lib/useMessages";
 
 type GymDetailsInfoProps = {
   address?: string | null;
+  opensAt?: string | null;
   closesAt?: string | null;
   hasTrainer: boolean;
   trainerFee?: number | null;
@@ -14,14 +15,14 @@ type GymDetailsInfoProps = {
 type Messages = {
   detail: {
     address: string;
-    closesAt: string;
+    openHours: string;
     trainer: string;
     trainerFee: string;
     parking: string;
   };
 };
 
-export function GymDetailsInfo({ address, closesAt, hasTrainer, trainerFee, hasParking, className }: GymDetailsInfoProps) {
+export function GymDetailsInfo({ address, opensAt, closesAt, hasTrainer, trainerFee, hasParking, className }: GymDetailsInfoProps) {
   const t = useMessages<Messages>();
 
   if (!t) return null;
@@ -38,12 +39,12 @@ export function GymDetailsInfo({ address, closesAt, hasTrainer, trainerFee, hasP
         </div>
       )}
       <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        {closesAt && (
+        {opensAt && closesAt && (
           <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="h-4 w-4 text-brand-600" aria-hidden="true">
               <circle cx="12" cy="12" r="8.25" /><path strokeLinecap="round" d="M12 7.5v4.75l3.25 1.75" />
             </svg>
-            <span>{t.detail.closesAt} {closesAt}</span>
+            <span>{t.detail.openHours} {opensAt}&#8211;{closesAt}</span>
           </div>
         )}
         {hasTrainer && (
